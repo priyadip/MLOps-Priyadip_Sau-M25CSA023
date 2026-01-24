@@ -3,108 +3,1464 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DLOps Assignment 1 - Priyadip Sau</title>
+    <title>DLOps Assignment 1 - Priyadip Sau (M25CSA023)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1, h2 { color: #333; }
-        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .stats { display: flex; justify-content: space-around; margin: 20px 0; }
-        .stat-card { border: 1px solid #ccc; padding: 10px; text-align: center; }
-        .tabs { margin: 20px 0; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        button { padding: 10px; margin: 5px; cursor: pointer; }
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a365d 50%, var(--bg-dark) 100%);
+            padding: 4rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .hero .author {
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .hero .roll {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Navigation */
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a.primary-btn {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .nav-links a.primary-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Section Styling */
+        section {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .section-header .badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .stat-sublabel {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        tr:hover {
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .highlight-row {
+            background: rgba(16, 185, 129, 0.15) !important;
+        }
+
+        .highlight-row td {
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        /* Code blocks */
+        code {
+            font-family: 'Fira Code', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.5rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover, .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Key Findings */
+        .findings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .finding-card {
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(37, 99, 235, 0.1) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+
+        .finding-card h4 {
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .finding-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            table {
+                font-size: 0.8rem;
+            }
+
+            th, td {
+                padding: 0.5rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        section {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Notice Box */
+        .notice {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .notice strong {
+            color: var(--warning);
+        }
+
+        /* TOC */
+        .toc {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .toc h3 {
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .toc ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .toc a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem;
+            display: block;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .toc a:hover {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+        }
     </style>
 </head>
 <body>
-    <h1>DLOps Assignment 1: Deep Learning Operations</h1>
-    <p>By Priyadip Sau (M25CSA023)</p>
-
-    <h2>Best Results Summary</h2>
-    <div class="stats">
-        <div class="stat-card">
-            <h3>MNIST ResNet-18</h3>
-            <p>Test Accuracy: 99.3%</p>
-            <p>Config: BS16, SGD, LR0.001, PMTrue, EP5</p>
+    <!-- Hero Section -->
+    <header class="hero">
+        <h1>Deep Learning Operations</h1>
+        <p class="subtitle">Assignment 1: ResNet & SVM Classification on MNIST/FashionMNIST</p>
+        <p class="author">Priyadip Sau</p>
+        <p class="roll">M25CSA023 | Department of Computer Science and Engineering</p>
+        
+        <div class="nav-links">
+            <a href="https://colab.research.google.com/drive/1RUpFLfIWphxVR4Xsd9B2E3yCURKh_atq?usp=sharing" class="primary-btn" target="_blank">
+                📓 Colab Notebook
+            </a>
+            <a href="https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023" target="_blank">
+                💻 GitHub Repository
+            </a>
+            <a href="https://huggingface.co/" target="_blank">
+                🤗 Models (Hugging Face)
+            </a>
+            <a href="#" target="_blank">
+                📁 Google Drive
+            </a>
+            <a href="M25CSA023_Priyadip_Sau_Ass1.pdf" target="_blank">
+                📄 Full Report (PDF)
+            </a>
         </div>
-        <div class="stat-card">
-            <h3>MNIST SVM</h3>
-            <p>Test Accuracy: 97.94%</p>
-            <p>Config: Poly, C1, gamma0.01, deg3</p>
-        </div>
-        <div class="stat-card">
-            <h3>FashionMNIST SVM</h3>
-            <p>Test Accuracy: ~84%</p>
-            <p>Config: Poly, C0.1, gammascale, deg2</p>
-        </div>
-        <div class="stat-card">
-            <h3>CPU vs GPU Speedup</h3>
-            <p>Max Speedup: ~22x</p>
-            <p>For ResNet-50, SGD</p>
-        </div>
-    </div>
+    </header>
 
-    <h2>Q1(a) ResNet Results</h2>
-    <div class="tabs">
-        <button onclick="showTab('mnist')">MNIST</button>
-        <button onclick="showTab('fashion')">FashionMNIST</button>
-    </div>
-    <div id="mnist" class="tab-content active">
-        <table>
-            <tr><th>Experiment</th><th>Test Acc</th><th>Best Val Acc</th><th>Training Time (s)</th></tr>
-            <tr><td>MNIST_ResNet-18_BS16_SGD_LR0.001_PMTrue_EP5</td><td>99.3%</td><td>99.3%</td><td>229.88</td></tr>
-            <tr><td>MNIST_ResNet-18_BS16_Adam_LR0.0001_PMFalse_EP5</td><td>99.04%</td><td>99.21%</td><td>284.66</td></tr>
-            <!-- Add more rows as needed -->
-        </table>
-    </div>
-    <div id="fashion" class="tab-content">
-        <p>FashionMNIST results similar, with slightly lower accuracies.</p>
-    </div>
+    <main class="container">
+        <!-- Table of Contents -->
+        <nav class="toc">
+            <h3>📑 Table of Contents</h3>
+            <ul>
+                <li><a href="#summary">Best Results Summary</a></li>
+                <li><a href="#q1a">Q1(a): ResNet Classification</a></li>
+                <li><a href="#q1b">Q1(b): SVM Classification</a></li>
+                <li><a href="#q2">Q2: CPU vs GPU Analysis</a></li>
+                <li><a href="#findings">Key Findings</a></li>
+                <li><a href="#notes">Technical Notes</a></li>
+            </ul>
+        </nav>
 
-    <h2>Q1(b) SVM Results</h2>
-    <table>
-        <tr><th>Experiment</th><th>Dataset</th><th>Kernel</th><th>C</th><th>Gamma</th><th>Test Acc</th><th>Training Time (ms)</th></tr>
-        <tr><td>MNIST_SVM_poly_C1_gamma0.01_deg3</td><td>MNIST</td><td>poly</td><td>1</td><td>0.01</td><td>97.94%</td><td>332019</td></tr>
-        <tr><td>MNIST_SVM_rbf_C10_gammaauto</td><td>MNIST</td><td>rbf</td><td>10</td><td>auto</td><td>97.28%</td><td>261180</td></tr>
-        <tr><td>FashionMNIST_SVM_poly_C0.1_gammascale_deg2</td><td>FashionMNIST</td><td>poly</td><td>0.1</td><td>scale</td><td>84.42%</td><td>547343</td></tr>
-        <!-- Add more -->
-    </table>
+        <!-- Best Results Summary -->
+        <section id="summary">
+            <div class="section-header">
+                <h2>🏆 Best Results Summary</h2>
+                <span class="badge">Highlights</span>
+            </div>
 
-    <h2>Q2 CPU vs GPU Comparison</h2>
-    <table>
-        <tr><th>Device</th><th>Model</th><th>Optimizer</th><th>Test Acc</th><th>Train Time (ms)</th><th>FLOPs</th><th>Speedup</th></tr>
-        <tr><td>CPU</td><td>ResNet-18</td><td>SGD</td><td>91.06%</td><td>3561202</td><td>148.865M</td><td>1x</td></tr>
-        <tr><td>GPU</td><td>ResNet-18</td><td>SGD</td><td>91.19%</td><td>156975</td><td>148.865M</td><td>22.7x</td></tr>
-        <!-- Add more -->
-    </table>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">99.30%</div>
+                    <div class="stat-label">MNIST Best (ResNet-18)</div>
+                    <div class="stat-sublabel">SGD, lr=0.001, batch=16</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">92.01%</div>
+                    <div class="stat-label">FashionMNIST Best (ResNet-18)</div>
+                    <div class="stat-sublabel">Adam, lr=0.0001, batch=16</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">97.94%</div>
+                    <div class="stat-label">MNIST SVM (Poly Kernel)</div>
+                    <div class="stat-sublabel">C=1.0, gamma=0.01, degree=3</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">90.31%</div>
+                    <div class="stat-label">FashionMNIST SVM (RBF)</div>
+                    <div class="stat-sublabel">C=10.0, gamma=scale</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">23.81×</div>
+                    <div class="stat-label">Max GPU Speedup</div>
+                    <div class="stat-sublabel">ResNet-18 with Adam</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">97.87%</div>
+                    <div class="stat-label">SVM + PCA Best</div>
+                    <div class="stat-sublabel">100 components, 12× faster</div>
+                </div>
+            </div>
+        </section>
 
-    <h2>Key Findings</h2>
-    <ul>
-        <li>ResNet-18 with SGD and LR 0.001 achieved the best accuracy for MNIST.</li>
-        <li>SVM with polynomial kernel performed well on MNIST, RBF on FashionMNIST.</li>
-        <li>GPU provides significant speedup over CPU for training.</li>
-    </ul>
+        <!-- Q1(a) ResNet Results -->
+        <section id="q1a">
+            <div class="section-header">
+                <h2>Q1(a): ResNet Classification Results</h2>
+                <span class="badge">Deep Learning</span>
+            </div>
 
-    <h2>Technical Notes</h2>
-    <p>Model files are stored on Hugging Face: <a href="#">Hugging Face Link</a></p>
-    <p>GitHub notebook encountered errors due to large file sizes.</p>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('mnist-5ep')">MNIST (5 Epochs)</button>
+                <button class="tab-btn" onclick="showTab('mnist-2ep')">MNIST (2 Epochs)</button>
+                <button class="tab-btn" onclick="showTab('fmnist-5ep')">FashionMNIST (5 Epochs)</button>
+                <button class="tab-btn" onclick="showTab('fmnist-2ep')">FashionMNIST (2 Epochs)</button>
+            </div>
 
-    <h2>Links</h2>
-    <ul>
-        <li><a href="https://colab.research.google.com/drive/1RUpFLfIWphxVR4Xsd9B2E3yCURKh_atq">Colab Notebook</a></li>
-        <li><a href="https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023/tree/Assignment-1">GitHub Repo</a></li>
-        <li><a href="https://huggingface.co/priyadip/dlops-assignment1-models">Hugging Face</a></li>
-        <li><a href="https://drive.google.com/drive/folders/1RTrnptc_XUl7rgOFfZCXwTbm5KKIV_co">Google Drive</a></li>
-    </ul>
+            <!-- MNIST 5 Epochs -->
+            <div id="mnist-5ep" class="tab-content active">
+                <div class="card">
+                    <h3>MNIST - 5 Epochs, pin_memory=True</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Batch Size</th>
+                                    <th>Optimizer</th>
+                                    <th>Learning Rate</th>
+                                    <th>ResNet-18</th>
+                                    <th>ResNet-50</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="highlight-row">
+                                    <td>16</td>
+                                    <td>SGD</td>
+                                    <td>0.001</td>
+                                    <td>99.30%</td>
+                                    <td>98.96%</td>
+                                </tr>
+                                <tr>
+                                    <td>16</td>
+                                    <td>SGD</td>
+                                    <td>0.0001</td>
+                                    <td>98.01%</td>
+                                    <td>97.11%</td>
+                                </tr>
+                                <tr>
+                                    <td>16</td>
+                                    <td>Adam</td>
+                                    <td>0.001</td>
+                                    <td>98.58%</td>
+                                    <td>98.54%</td>
+                                </tr>
+                                <tr>
+                                    <td>16</td>
+                                    <td>Adam</td>
+                                    <td>0.0001</td>
+                                    <td>98.94%</td>
+                                    <td>98.54%</td>
+                                </tr>
+                                <tr>
+                                    <td>32</td>
+                                    <td>SGD</td>
+                                    <td>0.001</td>
+                                    <td>98.98%</td>
+                                    <td>98.81%</td>
+                                </tr>
+                                <tr>
+                                    <td>32</td>
+                                    <td>SGD</td>
+                                    <td>0.0001</td>
+                                    <td>96.83%</td>
+                                    <td>94.11%</td>
+                                </tr>
+                                <tr>
+                                    <td>32</td>
+                                    <td>Adam</td>
+                                    <td>0.001</td>
+                                    <td>98.59%</td>
+                                    <td>97.91%</td>
+                                </tr>
+                                <tr>
+                                    <td>32</td>
+                                    <td>Adam</td>
+                                    <td>0.0001</td>
+                                    <td>99.08%</td>
+                                    <td>99.11%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MNIST 2 Epochs -->
+            <div id="mnist-2ep" class="tab-content">
+                <div class="card">
+                    <h3>MNIST - 2 Epochs, pin_memory=False</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Batch Size</th>
+                                    <th>Optimizer</th>
+                                    <th>Learning Rate</th>
+                                    <th>ResNet-18</th>
+                                    <th>ResNet-50</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>16</td>
+                                    <td>SGD</td>
+                                    <td>0.001</td>
+                                    <td>98.70%</td>
+                                    <td>98.66%</td>
+                                </tr>
+                                <tr>
+                                    <td>16</td>
+                                    <td>SGD</td>
+                                    <td>0.0001</td>
+                                    <td>94.03%</td>
+                                    <td>89.46%</td>
+                                </tr>
+                                <tr>
+                                    <td>16</td>
+                                    <td>Adam</td>
+                                    <td>0.001</td>
+                                    <td>97.36%</td>
+                                    <td>95.56%</td>
+                                </tr>
+                                <tr>
+                                    <td>16</td>
+                                    <td>Adam</td>
+                                    <td>0.0001</td>
+                                    <td>98.89%</td>
+                                    <td>98.41%</td>
+                                </tr>
+                                <tr>
+                                    <td>32</td>
+                                    <td>SGD</td>
+                                    <td>0.001</td>
+                                    <td>97.88%</td>
+                                    <td>98.32%</td>
+                                </tr>
+                                <tr>
+                                    <td>32</td>
+                                    <td>SGD</td>
+                                    <td>0.0001</td>
+                                    <td>89.89%</td>
+                                    <td>49.06%</td>
+                                </tr>
+                                <tr>
+                                    <td>32</td>
+                                    <td>Adam</td>
+                                    <td>0.001</td>
+                                    <td>96.09%</td>
+                                    <td>95.54%</td>
+                                </tr>
+                                <tr>
+                                    <td>32</td>
+                                    <td>Adam</td>
+                                    <td>0.0001</td>
+                                    <td>98.56%</td>
+                                    <td>97.89%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="notice">
+                        <strong>⚠️ Note:</strong> ResNet-50 with SGD (lr=0.0001, batch=32) achieved only 49.06% - demonstrating that deeper networks require careful hyperparameter tuning.
+                    </div>
+                </div>
+            </div>
+
+            <!-- FashionMNIST 5 Epochs -->
+            <div id="fmnist-5ep" class="tab-content">
+                <div class="card">
+                    <h3>FashionMNIST - 5 Epochs, pin_memory=False</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Batch Size</th>
+                                    <th>Optimizer</th>
+                                    <th>Learning Rate</th>
+                                    <th>ResNet-18</th>
+                                    <th>ResNet-50</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>16</td>
+                                    <td>SGD</td>
+                                    <td>0.001</td>
+                                    <td>90.89%</td>
+                                    <td>89.63%</td>
+                                </tr>
+                                <tr>
+                                    <td>16</td>
+                                    <td>SGD</td>
+                                    <td>0.0001</td>
+                                    <td>82.49%</td>
+                                    <td>78.70%</td>
+                                </tr>
+                                <tr>
+                                    <td>16</td>
+                                    <td>Adam</td>
+                                    <td>0.001</td>
+                                    <td>90.31%</td>
+                                    <td>88.01%</td>
+                                </tr>
+                                <tr class="highlight-row">
+                                    <td>16</td>
+                                    <td>Adam</td>
+                                    <td>0.0001</td>
+                                    <td>92.01%</td>
+                                    <td>90.70%</td>
+                                </tr>
+                                <tr>
+                                    <td>32</td>
+                                    <td>SGD</td>
+                                    <td>0.001</td>
+                                    <td>89.85%</td>
+                                    <td>87.26%</td>
+                                </tr>
+                                <tr>
+                                    <td>32</td>
+                                    <td>SGD</td>
+                                    <td>0.0001</td>
+                                    <td>76.71%</td>
+                                    <td>73.21%</td>
+                                </tr>
+                                <tr>
+                                    <td>32</td>
+                                    <td>Adam</td>
+                                    <td>0.001</td>
+                                    <td>89.64%</td>
+                                    <td>87.51%</td>
+                                </tr>
+                                <tr>
+                                    <td>32</td>
+                                    <td>Adam</td>
+                                    <td>0.0001</td>
+                                    <td>91.80%</td>
+                                    <td>91.35%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FashionMNIST 2 Epochs -->
+            <div id="fmnist-2ep" class="tab-content">
+                <div class="card">
+                    <h3>FashionMNIST - 2 Epochs, pin_memory=True</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Batch Size</th>
+                                    <th>Optimizer</th>
+                                    <th>Learning Rate</th>
+                                    <th>ResNet-18</th>
+                                    <th>ResNet-50</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>16</td>
+                                    <td>SGD</td>
+                                    <td>0.001</td>
+                                    <td>84.51%</td>
+                                    <td>79.99%</td>
+                                </tr>
+                                <tr>
+                                    <td>16</td>
+                                    <td>SGD</td>
+                                    <td>0.0001</td>
+                                    <td>76.19%</td>
+                                    <td>70.14%</td>
+                                </tr>
+                                <tr>
+                                    <td>16</td>
+                                    <td>Adam</td>
+                                    <td>0.001</td>
+                                    <td>83.83%</td>
+                                    <td>80.34%</td>
+                                </tr>
+                                <tr>
+                                    <td>16</td>
+                                    <td>Adam</td>
+                                    <td>0.0001</td>
+                                    <td>86.82%</td>
+                                    <td>88.03%</td>
+                                </tr>
+                                <tr>
+                                    <td>32</td>
+                                    <td>SGD</td>
+                                    <td>0.001</td>
+                                    <td>82.76%</td>
+                                    <td>83.55%</td>
+                                </tr>
+                                <tr>
+                                    <td>32</td>
+                                    <td>SGD</td>
+                                    <td>0.0001</td>
+                                    <td>69.84%</td>
+                                    <td>63.89%</td>
+                                </tr>
+                                <tr>
+                                    <td>32</td>
+                                    <td>Adam</td>
+                                    <td>0.001</td>
+                                    <td>83.36%</td>
+                                    <td>83.81%</td>
+                                </tr>
+                                <tr>
+                                    <td>32</td>
+                                    <td>Adam</td>
+                                    <td>0.0001</td>
+                                    <td>87.33%</td>
+                                    <td>86.59%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Best Models Summary -->
+            <div class="card">
+                <h3>🎯 Optimal Configurations</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Dataset</th>
+                                <th>Model</th>
+                                <th>Accuracy</th>
+                                <th>Batch</th>
+                                <th>Optimizer</th>
+                                <th>LR</th>
+                                <th>Epochs</th>
+                                <th>Time (s)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="highlight-row">
+                                <td>MNIST</td>
+                                <td>ResNet-18</td>
+                                <td>99.30%</td>
+                                <td>16</td>
+                                <td>SGD</td>
+                                <td>0.001</td>
+                                <td>5</td>
+                                <td>229.88</td>
+                            </tr>
+                            <tr>
+                                <td>MNIST</td>
+                                <td>ResNet-50</td>
+                                <td>99.13%</td>
+                                <td>16</td>
+                                <td>SGD</td>
+                                <td>0.001</td>
+                                <td>5</td>
+                                <td>511.97</td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td>FashionMNIST</td>
+                                <td>ResNet-18</td>
+                                <td>92.01%</td>
+                                <td>16</td>
+                                <td>Adam</td>
+                                <td>0.0001</td>
+                                <td>5</td>
+                                <td>287.55</td>
+                            </tr>
+                            <tr>
+                                <td>FashionMNIST</td>
+                                <td>ResNet-50</td>
+                                <td>91.35%</td>
+                                <td>32</td>
+                                <td>Adam</td>
+                                <td>0.0001</td>
+                                <td>5</td>
+                                <td>434.13</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Q1(b) SVM Results -->
+        <section id="q1b">
+            <div class="section-header">
+                <h2>Q1(b): SVM Classification Results</h2>
+                <span class="badge">Traditional ML</span>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('svm-mnist')">MNIST</button>
+                <button class="tab-btn" onclick="showTab('svm-fmnist')">FashionMNIST</button>
+                <button class="tab-btn" onclick="showTab('svm-pca')">SVM + PCA</button>
+            </div>
+
+            <!-- SVM MNIST -->
+            <div id="svm-mnist" class="tab-content active">
+                <div class="card">
+                    <h3>MNIST - Polynomial Kernel</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>C</th>
+                                    <th>Gamma</th>
+                                    <th>Degree</th>
+                                    <th>Accuracy (%)</th>
+                                    <th>Train Time (ms)</th>
+                                    <th>Support Vectors</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="highlight-row">
+                                    <td>1.0</td>
+                                    <td>0.01</td>
+                                    <td>3</td>
+                                    <td>97.94%</td>
+                                    <td>332,019</td>
+                                    <td>15,189</td>
+                                </tr>
+                                <tr>
+                                    <td>10.0</td>
+                                    <td>0.01</td>
+                                    <td>3</td>
+                                    <td>97.94%</td>
+                                    <td>331,684</td>
+                                    <td>15,189</td>
+                                </tr>
+                                <tr>
+                                    <td>10.0</td>
+                                    <td>scale</td>
+                                    <td>3</td>
+                                    <td>97.64%</td>
+                                    <td>351,666</td>
+                                    <td>15,462</td>
+                                </tr>
+                                <tr>
+                                    <td>0.1</td>
+                                    <td>0.01</td>
+                                    <td>3</td>
+                                    <td>97.90%</td>
+                                    <td>334,050</td>
+                                    <td>15,167</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>MNIST - RBF Kernel</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>C</th>
+                                    <th>Gamma</th>
+                                    <th>Accuracy (%)</th>
+                                    <th>Train Time (ms)</th>
+                                    <th>Support Vectors</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="highlight-row">
+                                    <td>10.0</td>
+                                    <td>auto</td>
+                                    <td>97.28%</td>
+                                    <td>261,180</td>
+                                    <td>14,114</td>
+                                </tr>
+                                <tr>
+                                    <td>10.0</td>
+                                    <td>scale</td>
+                                    <td>97.26%</td>
+                                    <td>278,480</td>
+                                    <td>14,535</td>
+                                </tr>
+                                <tr>
+                                    <td>10.0</td>
+                                    <td>0.001</td>
+                                    <td>97.18%</td>
+                                    <td>225,985</td>
+                                    <td>13,104</td>
+                                </tr>
+                                <tr>
+                                    <td>10.0</td>
+                                    <td>0.01</td>
+                                    <td>86.27%</td>
+                                    <td>1,995,559</td>
+                                    <td>36,931</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SVM FashionMNIST -->
+            <div id="svm-fmnist" class="tab-content">
+                <div class="card">
+                    <h3>FashionMNIST - Polynomial Kernel</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>C</th>
+                                    <th>Gamma</th>
+                                    <th>Degree</th>
+                                    <th>Accuracy (%)</th>
+                                    <th>Train Time (ms)</th>
+                                    <th>Support Vectors</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="highlight-row">
+                                    <td>0.1</td>
+                                    <td>0.01</td>
+                                    <td>3</td>
+                                    <td>90.29%</td>
+                                    <td>274,542</td>
+                                    <td>20,072</td>
+                                </tr>
+                                <tr>
+                                    <td>10.0</td>
+                                    <td>scale</td>
+                                    <td>2</td>
+                                    <td>90.21%</td>
+                                    <td>252,636</td>
+                                    <td>19,113</td>
+                                </tr>
+                                <tr>
+                                    <td>10.0</td>
+                                    <td>scale</td>
+                                    <td>3</td>
+                                    <td>90.19%</td>
+                                    <td>284,771</td>
+                                    <td>20,043</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>FashionMNIST - RBF Kernel</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>C</th>
+                                    <th>Gamma</th>
+                                    <th>Accuracy (%)</th>
+                                    <th>Train Time (ms)</th>
+                                    <th>Support Vectors</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="highlight-row">
+                                    <td>10.0</td>
+                                    <td>scale</td>
+                                    <td>90.31%</td>
+                                    <td>272,680</td>
+                                    <td>20,780</td>
+                                </tr>
+                                <tr>
+                                    <td>10.0</td>
+                                    <td>auto</td>
+                                    <td>90.31%</td>
+                                    <td>272,804</td>
+                                    <td>20,782</td>
+                                </tr>
+                                <tr>
+                                    <td>10.0</td>
+                                    <td>0.001</td>
+                                    <td>90.18%</td>
+                                    <td>247,542</td>
+                                    <td>19,960</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SVM + PCA -->
+            <div id="svm-pca" class="tab-content">
+                <div class="card">
+                    <h3>SVM with PCA Dimensionality Reduction</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                        Due to long training times (300,000+ ms per configuration), we applied PCA to reduce dimensions from 784 to 50/100/150 components, achieving 12× speedup while maintaining 80%+ accuracy.
+                    </p>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Dataset</th>
+                                    <th>PCA Components</th>
+                                    <th>Variance Retained</th>
+                                    <th>Kernel</th>
+                                    <th>C</th>
+                                    <th>Gamma</th>
+                                    <th>Accuracy (%)</th>
+                                    <th>Time (ms)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>MNIST</td>
+                                    <td>50</td>
+                                    <td>55.07%</td>
+                                    <td>RBF</td>
+                                    <td>10.0</td>
+                                    <td>scale</td>
+                                    <td>97.54%</td>
+                                    <td>30,590</td>
+                                </tr>
+                                <tr>
+                                    <td>MNIST</td>
+                                    <td>100</td>
+                                    <td>70.33%</td>
+                                    <td>Poly (d=3)</td>
+                                    <td>0.1</td>
+                                    <td>auto</td>
+                                    <td>97.70%</td>
+                                    <td>27,084</td>
+                                </tr>
+                                <tr class="highlight-row">
+                                    <td>MNIST</td>
+                                    <td>100</td>
+                                    <td>70.33%</td>
+                                    <td>RBF</td>
+                                    <td>10.0</td>
+                                    <td>scale</td>
+                                    <td>97.87%</td>
+                                    <td>24,819</td>
+                                </tr>
+                                <tr>
+                                    <td>FashionMNIST</td>
+                                    <td>100</td>
+                                    <td>87.08%</td>
+                                    <td>RBF</td>
+                                    <td>10.0</td>
+                                    <td>scale</td>
+                                    <td>89.31%</td>
+                                    <td>51,786</td>
+                                </tr>
+                                <tr class="highlight-row">
+                                    <td>FashionMNIST</td>
+                                    <td>150</td>
+                                    <td>90.78%</td>
+                                    <td>RBF</td>
+                                    <td>10.0</td>
+                                    <td>scale</td>
+                                    <td>89.77%</td>
+                                    <td>77,164</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Q2 CPU vs GPU -->
+        <section id="q2">
+            <div class="section-header">
+                <h2>Q2: CPU vs GPU Performance Analysis</h2>
+                <span class="badge">FashionMNIST</span>
+            </div>
+
+            <div class="card">
+                <h3>Training Performance Comparison</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Compute</th>
+                                <th>Model</th>
+                                <th>Optimizer</th>
+                                <th>Test Acc (%)</th>
+                                <th>Val Acc (%)</th>
+                                <th>Train Time (ms)</th>
+                                <th>FLOPs</th>
+                                <th>Speedup</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>CPU</td>
+                                <td>ResNet-18</td>
+                                <td>SGD</td>
+                                <td>91.06%</td>
+                                <td>91.20%</td>
+                                <td>3,561,202</td>
+                                <td>148.87M</td>
+                                <td>1.00×</td>
+                            </tr>
+                            <tr>
+                                <td>CPU</td>
+                                <td>ResNet-32</td>
+                                <td>SGD</td>
+                                <td>90.87%</td>
+                                <td>91.19%</td>
+                                <td>2,727,965</td>
+                                <td>285.83M</td>
+                                <td>1.00×</td>
+                            </tr>
+                            <tr>
+                                <td>CPU</td>
+                                <td>ResNet-50</td>
+                                <td>SGD</td>
+                                <td>89.74%</td>
+                                <td>89.93%</td>
+                                <td>6,214,446</td>
+                                <td>337.30M</td>
+                                <td>1.00×</td>
+                            </tr>
+                            <tr>
+                                <td>CPU</td>
+                                <td>ResNet-18</td>
+                                <td>Adam</td>
+                                <td>90.19%</td>
+                                <td>90.51%</td>
+                                <td>3,998,669</td>
+                                <td>148.87M</td>
+                                <td>1.00×</td>
+                            </tr>
+                            <tr>
+                                <td>CPU</td>
+                                <td>ResNet-32</td>
+                                <td>Adam</td>
+                                <td>90.15%</td>
+                                <td>90.34%</td>
+                                <td>2,940,160</td>
+                                <td>285.83M</td>
+                                <td>1.00×</td>
+                            </tr>
+                            <tr>
+                                <td>CPU</td>
+                                <td>ResNet-50</td>
+                                <td>Adam</td>
+                                <td>88.58%</td>
+                                <td>88.31%</td>
+                                <td>7,015,001</td>
+                                <td>337.30M</td>
+                                <td>1.00×</td>
+                            </tr>
+                            <tr style="border-top: 2px solid var(--primary);">
+                                <td><strong>GPU</strong></td>
+                                <td>ResNet-18</td>
+                                <td>SGD</td>
+                                <td>91.19%</td>
+                                <td>91.33%</td>
+                                <td>156,975</td>
+                                <td>148.87M</td>
+                                <td><strong>22.69×</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>GPU</strong></td>
+                                <td>ResNet-32</td>
+                                <td>SGD</td>
+                                <td>91.14%</td>
+                                <td>91.11%</td>
+                                <td>223,410</td>
+                                <td>285.83M</td>
+                                <td><strong>12.21×</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>GPU</strong></td>
+                                <td>ResNet-50</td>
+                                <td>SGD</td>
+                                <td>90.24%</td>
+                                <td>89.81%</td>
+                                <td>330,349</td>
+                                <td>337.30M</td>
+                                <td><strong>18.81×</strong></td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td><strong>GPU</strong></td>
+                                <td>ResNet-18</td>
+                                <td>Adam</td>
+                                <td>89.89%</td>
+                                <td>90.57%</td>
+                                <td>167,923</td>
+                                <td>148.87M</td>
+                                <td><strong>23.81×</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>GPU</strong></td>
+                                <td>ResNet-32</td>
+                                <td>Adam</td>
+                                <td>90.06%</td>
+                                <td>90.00%</td>
+                                <td>239,122</td>
+                                <td>285.83M</td>
+                                <td><strong>12.30×</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>GPU</strong></td>
+                                <td>ResNet-50</td>
+                                <td>Adam</td>
+                                <td>88.83%</td>
+                                <td>88.81%</td>
+                                <td>352,534</td>
+                                <td>337.30M</td>
+                                <td><strong>19.90×</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">12-24×</div>
+                    <div class="stat-label">GPU Speedup Range</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">&lt;0.3%</div>
+                    <div class="stat-label">Accuracy Difference</div>
+                    <div class="stat-sublabel">CPU vs GPU</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">148.87M</div>
+                    <div class="stat-label">ResNet-18 FLOPs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">337.30M</div>
+                    <div class="stat-label">ResNet-50 FLOPs</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Findings -->
+        <section id="findings">
+            <div class="section-header">
+                <h2>📊 Key Findings</h2>
+            </div>
+
+            <div class="findings-grid">
+                <div class="finding-card">
+                    <h4>🏗️ Architecture Choice</h4>
+                    <p>ResNet-18 outperforms or matches ResNet-50 on both datasets while training 2× faster. Deeper networks don't always mean better performance for simpler tasks.</p>
+                </div>
+                <div class="finding-card">
+                    <h4>⚙️ Optimizer Selection</h4>
+                    <p>SGD excels on MNIST (simpler patterns), while Adam is superior for FashionMNIST (complex features). Optimizer choice should be task-specific.</p>
+                </div>
+                <div class="finding-card">
+                    <h4>📈 Learning Rate Impact</h4>
+                    <p>Learning rate is the most influential hyperparameter. Wrong choices can cause 20%+ accuracy drops, especially on FashionMNIST.</p>
+                </div>
+                <div class="finding-card">
+                    <h4>🚀 GPU Acceleration</h4>
+                    <p>GPU training provides 12-24× speedup with negligible accuracy difference. Essential for efficient hyperparameter search.</p>
+                </div>
+                <div class="finding-card">
+                    <h4>🎯 SVM Competitiveness</h4>
+                    <p>SVM achieves 97.94% (MNIST) and 90.31% (FashionMNIST) - only 1.4-1.7% below deep learning, without GPU requirement.</p>
+                </div>
+                <div class="finding-card">
+                    <h4>📉 PCA Efficiency</h4>
+                    <p>PCA reduces training time by 12× while maintaining 97%+ accuracy on MNIST. Effective for SVM when time is constrained.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Notes -->
+        <section id="notes">
+            <div class="section-header">
+                <h2>📝 Technical Notes & Practical Considerations</h2>
+            </div>
+
+            <div class="card">
+                <h3>Configuration Details</h3>
+                <p>All experiments used: <code>USE_AMP=True</code> (mixed-precision training), 70%-10%-20% train-val-test split, PyTorch with torchvision, and scikit-learn for SVM.</p>
+            </div>
+
+            <div class="card">
+                <h3>Model Storage</h3>
+                <p>Best SVM models exceed <strong>100MB</strong> due to large support vector counts. GitHub file size limits prevent direct storage, so models are hosted on <a href="https://huggingface.co/" target="_blank" style="color: var(--primary);">Hugging Face</a>.</p>
+            </div>
+
+            <div class="card">
+                <h3>GitHub Notebook Issue</h3>
+                <p>Encountered rendering error: <code>"There was an error rendering your Notebook: the 'state' key is missing from 'metadata.widgets'"</code>. This relates to interactive widget metadata and required manual intervention.</p>
+            </div>
+
+            <div class="card">
+                <h3>Additional Resources</h3>
+                <p>All Python source files (.py), training logs, intermediate results, and experimental outputs are stored in <a href="#" style="color: var(--primary);">Google Drive</a> for complete reproducibility.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>
+            <strong>DLOps Assignment 1</strong> | Priyadip Sau (M25CSA023)<br>
+            <a href="https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023">GitHub Repository</a> | 
+            <a href="https://colab.research.google.com/drive/1RUpFLfIWphxVR4Xsd9B2E3yCURKh_atq?usp=sharing">Colab Notebook</a><br>
+            <small>Department of Computer Science and Engineering | January 2026</small>
+        </p>
+    </footer>
 
     <script>
-        function showTab(tabName) {
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(c => c.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
+        // Tab switching functionality
+        function showTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons in the same tab group
+            event.target.closest('.tabs').querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab and mark button as active
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
         }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
     </script>
 </body>
 </html>
+
+
+   
