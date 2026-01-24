@@ -518,6 +518,21 @@
 | FashionMNIST | rbf    | 10.0 | 0.001     | -      | 90.18        | 247542.41           | 19960           |
 | FashionMNIST | rbf    | 10.0 | 0.01      | -      | 81.85        | 1605553.22          | 39661           |
 
+
+---
+
+### SVM Analysis Results
+
+#### MNIST
+![MNIST Polynomial Kernel Analysis](./figures/Q1(A)/svm_MNIST_poly_analysis.png)
+![MNIST RBF Kernel Heatmap](./figures/Q1(A)/svm_MNIST_rbf_heatmap.png)
+
+#### FashionMNIST
+![FashionMNIST Polynomial Kernel Analysis](./figures/Q1(A)/svm_FashionMNIST_poly_analysis.png)
+![FashionMNIST RBF Kernel Heatmap](./figures/Q1(A)/svm_FashionMNIST_rbf_heatmap.png)
+
+#### Overall Comparison
+![SVM Comparison Analysis](./figures/Q1(A)/svm_comparison_analysis.png)
 ---
 
 # Best Models by Dataset
@@ -613,7 +628,7 @@ This comprehensive evaluation demonstrates that **GPU acceleration is imperative
 
 ---
 ### CPU vs GPU Comparison Chart
-![CPU vs GPU Comparison](./figures/cpu_gpu_comparison.png)
+![CPU vs GPU Comparison](./figures/Q2/q2_cpu_gpu_comparison.png)
 
 ---
 
