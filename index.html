@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DLOps Assignment 1 - Priyadip Sau</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1, h2 { color: #333; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .stats { display: flex; justify-content: space-around; margin: 20px 0; }
+        .stat-card { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        .tabs { margin: 20px 0; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        button { padding: 10px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>DLOps Assignment 1: Deep Learning Operations</h1>
+    <p>By Priyadip Sau (M25CSA023)</p>
+
+    <h2>Best Results Summary</h2>
+    <div class="stats">
+        <div class="stat-card">
+            <h3>MNIST ResNet-18</h3>
+            <p>Test Accuracy: 99.3%</p>
+            <p>Config: BS16, SGD, LR0.001, PMTrue, EP5</p>
+        </div>
+        <div class="stat-card">
+            <h3>MNIST SVM</h3>
+            <p>Test Accuracy: 97.94%</p>
+            <p>Config: Poly, C1, gamma0.01, deg3</p>
+        </div>
+        <div class="stat-card">
+            <h3>FashionMNIST SVM</h3>
+            <p>Test Accuracy: ~84%</p>
+            <p>Config: Poly, C0.1, gammascale, deg2</p>
+        </div>
+        <div class="stat-card">
+            <h3>CPU vs GPU Speedup</h3>
+            <p>Max Speedup: ~22x</p>
+            <p>For ResNet-50, SGD</p>
+        </div>
+    </div>
+
+    <h2>Q1(a) ResNet Results</h2>
+    <div class="tabs">
+        <button onclick="showTab('mnist')">MNIST</button>
+        <button onclick="showTab('fashion')">FashionMNIST</button>
+    </div>
+    <div id="mnist" class="tab-content active">
+        <table>
+            <tr><th>Experiment</th><th>Test Acc</th><th>Best Val Acc</th><th>Training Time (s)</th></tr>
+            <tr><td>MNIST_ResNet-18_BS16_SGD_LR0.001_PMTrue_EP5</td><td>99.3%</td><td>99.3%</td><td>229.88</td></tr>
+            <tr><td>MNIST_ResNet-18_BS16_Adam_LR0.0001_PMFalse_EP5</td><td>99.04%</td><td>99.21%</td><td>284.66</td></tr>
+            <!-- Add more rows as needed -->
+        </table>
+    </div>
+    <div id="fashion" class="tab-content">
+        <p>FashionMNIST results similar, with slightly lower accuracies.</p>
+    </div>
+
+    <h2>Q1(b) SVM Results</h2>
+    <table>
+        <tr><th>Experiment</th><th>Dataset</th><th>Kernel</th><th>C</th><th>Gamma</th><th>Test Acc</th><th>Training Time (ms)</th></tr>
+        <tr><td>MNIST_SVM_poly_C1_gamma0.01_deg3</td><td>MNIST</td><td>poly</td><td>1</td><td>0.01</td><td>97.94%</td><td>332019</td></tr>
+        <tr><td>MNIST_SVM_rbf_C10_gammaauto</td><td>MNIST</td><td>rbf</td><td>10</td><td>auto</td><td>97.28%</td><td>261180</td></tr>
+        <tr><td>FashionMNIST_SVM_poly_C0.1_gammascale_deg2</td><td>FashionMNIST</td><td>poly</td><td>0.1</td><td>scale</td><td>84.42%</td><td>547343</td></tr>
+        <!-- Add more -->
+    </table>
+
+    <h2>Q2 CPU vs GPU Comparison</h2>
+    <table>
+        <tr><th>Device</th><th>Model</th><th>Optimizer</th><th>Test Acc</th><th>Train Time (ms)</th><th>FLOPs</th><th>Speedup</th></tr>
+        <tr><td>CPU</td><td>ResNet-18</td><td>SGD</td><td>91.06%</td><td>3561202</td><td>148.865M</td><td>1x</td></tr>
+        <tr><td>GPU</td><td>ResNet-18</td><td>SGD</td><td>91.19%</td><td>156975</td><td>148.865M</td><td>22.7x</td></tr>
+        <!-- Add more -->
+    </table>
+
+    <h2>Key Findings</h2>
+    <ul>
+        <li>ResNet-18 with SGD and LR 0.001 achieved the best accuracy for MNIST.</li>
+        <li>SVM with polynomial kernel performed well on MNIST, RBF on FashionMNIST.</li>
+        <li>GPU provides significant speedup over CPU for training.</li>
+    </ul>
+
+    <h2>Technical Notes</h2>
+    <p>Model files are stored on Hugging Face: <a href="#">Hugging Face Link</a></p>
+    <p>GitHub notebook encountered errors due to large file sizes.</p>
+
+    <h2>Links</h2>
+    <ul>
+        <li><a href="#">Colab Notebook</a></li>
+        <li><a href="https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023">GitHub Repo</a></li>
+        <li><a href="#">Hugging Face</a></li>
+        <li><a href="#">Google Drive</a></li>
+    </ul>
+
+    <script>
+        function showTab(tabName) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(c => c.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+        }
+    </script>
+</body>
+</html>
