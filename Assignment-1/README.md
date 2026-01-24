@@ -136,8 +136,13 @@
 
 
 ### Training Curves
-![Loss Curve ResNet-18](./figures/loss_curve_resnet18.png)
-![Accuracy Curve ResNet-50](./figures/acc_curve_resnet50.png)
+#### MNIST
+![Loss Curve ResNet-18](./figures/Q1(A)/MNIST_ResNet-18_BS16_SGD_LR0.001_PMTrue_EP5_history.png)
+![Accuracy Curve ResNet-50](./figures/Q1(A)/MNIST_ResNet-50_BS16_SGD_LR0.001_PMFalse_EP5_history.png)
+
+#### FashionMNIST
+![Loss Curve ResNet-18](./figures/Q1(A)/FashionMNIST_ResNet-18_BS16_Adam_LR0.0001_PMFalse_EP5_history.png)
+![Accuracy Curve ResNet-50](./figures/Q1(A)/FashionMNIST_ResNet-50_BS32_Adam_LR0.0001_PMFalse_EP5_history.png)
 
 ---
 
