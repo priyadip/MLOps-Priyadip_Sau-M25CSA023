@@ -134,6 +134,13 @@
 
 ---
 
+
+### Training Curves
+![Loss Curve ResNet-18](./figures/loss_curve_resnet18.png)
+![Accuracy Curve ResNet-50](./figures/acc_curve_resnet50.png)
+
+---
+
 ### Complete MNIST Results Table (All Configurations)
 
 | Batch Size | Optimizer | Learning Rate | pin_memory | Epochs | ResNet-18 Acc (%) | ResNet-50 Acc (%) | ResNet-18 Time (s) | ResNet-50 Time (s) |
@@ -209,12 +216,6 @@
 | 32 | Adam | 0.0001 | False | 5 | 91.8 | 91.35 | 220.03815627098083 | 434.13118863105774 |
 | 32 | Adam | 0.0001 | True | 2 | 87.32857142857142 | 86.58571428571429 | 75.12481093406677 | 159.04986381530762 |
 | 32 | Adam | 0.0001 | True | 5 | 91.42857142857143 | 91.25714285714285 | 179.24412202835083 | 387.52039766311646 |
-
----
-
-### Training Curves
-![Loss Curve ResNet-18](./figures/loss_curve_resnet18.png)
-![Accuracy Curve ResNet-50](./figures/acc_curve_resnet50.png)
 
 ---
 
