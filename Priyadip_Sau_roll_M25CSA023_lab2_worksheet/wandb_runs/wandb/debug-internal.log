@@ -1,0 +1,12 @@
+{"time":"2026-02-01T23:02:22.499152531+05:30","level":"INFO","msg":"stream: starting","core version":"0.24.0"}
+{"time":"2026-02-01T23:02:23.033916775+05:30","level":"INFO","msg":"stream: created new stream","id":"vohhvxfs"}
+{"time":"2026-02-01T23:02:23.034102836+05:30","level":"INFO","msg":"handler: started","stream_id":"vohhvxfs"}
+{"time":"2026-02-01T23:02:23.03465977+05:30","level":"INFO","msg":"stream: started","id":"vohhvxfs"}
+{"time":"2026-02-01T23:02:23.034679918+05:30","level":"INFO","msg":"writer: started","stream_id":"vohhvxfs"}
+{"time":"2026-02-01T23:02:23.034681742+05:30","level":"INFO","msg":"sender: started","stream_id":"vohhvxfs"}
+{"time":"2026-02-01T23:38:50.928988971+05:30","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-02-01T23:38:51.575465755+05:30","level":"INFO","msg":"handler: operation stats","stats":{}}
+{"time":"2026-02-01T23:38:51.588925541+05:30","level":"INFO","msg":"stream: closing","id":"vohhvxfs"}
+{"time":"2026-02-01T23:38:51.588955568+05:30","level":"INFO","msg":"handler: closed","stream_id":"vohhvxfs"}
+{"time":"2026-02-01T23:38:51.589185783+05:30","level":"INFO","msg":"sender: closed","stream_id":"vohhvxfs"}
+{"time":"2026-02-01T23:38:51.589203006+05:30","level":"INFO","msg":"stream: closed","id":"vohhvxfs"}

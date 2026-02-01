@@ -1,0 +1,150 @@
+_wandb:
+    value:
+        cli_version: 0.24.0
+        e:
+            x58o16ktzwishss17d6fe23eicotawsy:
+                args:
+                    - --data-dir
+                    - /scratch/data/m25csa023/Lab2/cifar10_data
+                    - --results-dir
+                    - /scratch/data/m25csa023/Lab2/cifar10_results
+                    - --models-dir
+                    - /scratch/data/m25csa023/Lab2/cifar10_models
+                    - --epochs
+                    - "60"
+                    - --batch-size
+                    - "128"
+                    - --lr
+                    - "3e-4"
+                    - --weight-decay
+                    - "5e-4"
+                    - --num-workers
+                    - "4"
+                    - --seed
+                    - "42"
+                    - --amp
+                    - --wandb-project
+                    - cifar10-convnext-v2
+                codePath: train.py
+                codePathLocal: train.py
+                cpu_count: 128
+                cpu_count_logical: 256
+                cudaVersion: "12.5"
+                disk:
+                    /:
+                        total: "3643055407104"
+                        used: "62619049984"
+                email: saupriyadip571@gmail.com
+                executable: /scratch/data/m25csa023/conda/envs/dlops/bin/python
+                gpu: NVIDIA A100-SXM4-40GB
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Ampere
+                      cudaCores: 6912
+                      memoryTotal: "42949672960"
+                      name: NVIDIA A100-SXM4-40GB
+                      uuid: GPU-88443735-7a3f-f6c5-96f1-ec2ff14ed76d
+                host: gpu2
+                memory:
+                    total: "1081715281920"
+                os: Linux-4.18.0-372.9.1.el8.x86_64-x86_64-with-glibc2.28
+                program: /scratch/data/m25csa023/Lab2/train.py
+                python: CPython 3.10.19
+                root: /scratch/data/m25csa023/Lab2/wandb_runs
+                slurm:
+                    cluster_name: iitj
+                    conf: /etc/slurm/slurm.conf
+                    cpus_on_node: "8"
+                    cpus_per_task: "8"
+                    gpus_on_node: "1"
+                    gtids: "0"
+                    job_account: root
+                    job_cpus_per_node: "8"
+                    job_gid: "1005"
+                    job_gpus: "6"
+                    job_id: "222174"
+                    job_name: cifar10_convnext
+                    job_nodelist: gpu2
+                    job_num_nodes: "1"
+                    job_partition: dgx
+                    job_qos: normal
+                    job_uid: "1863"
+                    job_user: m25csa023
+                    jobid: "222174"
+                    localid: "0"
+                    mem_per_node: "32768"
+                    nnodes: "1"
+                    node_aliases: (null)
+                    nodeid: "0"
+                    nodelist: gpu2
+                    nprocs: "1"
+                    ntasks: "1"
+                    prio_process: "0"
+                    procid: "0"
+                    submit_dir: /scratch/data/m25csa023/Lab2
+                    submit_host: login.iitj.ac.in
+                    task_pid: "3139260"
+                    tasks_per_node: "1"
+                    topology_addr: gpu2
+                    topology_addr_pattern: node
+                    working_cluster: iitj:login:6817:9728:109
+                startedAt: "2026-02-01T17:32:22.236287Z"
+                writerId: x58o16ktzwishss17d6fe23eicotawsy
+        m: []
+        python_version: 3.10.19
+        t:
+            "1":
+                - 1
+                - 5
+                - 41
+                - 53
+            "2":
+                - 1
+                - 5
+                - 41
+                - 53
+            "3":
+                - 1
+                - 2
+                - 13
+                - 15
+                - 16
+                - 62
+            "4": 3.10.19
+            "5": 0.24.0
+            "12": 0.24.0
+            "13": linux-x86_64
+amp:
+    value: true
+batch_size:
+    value: 128
+depths:
+    value:
+        - 2
+        - 2
+        - 2
+dims:
+    value:
+        - 32
+        - 64
+        - 128
+epochs:
+    value: 60
+flops:
+    value: 1.0871168e+09
+learning_rate:
+    value: 0.0003
+macs:
+    value: 5.435584e+08
+model_name:
+    value: ConvNeXt-V2-Tiny-CIFAR10
+optimizer:
+    value: AdamW
+params:
+    value: 5.537098e+06
+scheduler:
+    value: CosineAnnealingLR
+seed:
+    value: 42
+weight_decay:
+    value: 0.0005

@@ -1,0 +1,25 @@
+2026-02-01 23:02:22,240 INFO    MainThread:3139403 [wandb_setup.py:_flush():81] Current SDK version is 0.24.0
+2026-02-01 23:02:22,240 INFO    MainThread:3139403 [wandb_setup.py:_flush():81] Configure stats pid to 3139403
+2026-02-01 23:02:22,240 INFO    MainThread:3139403 [wandb_setup.py:_flush():81] Loading settings from environment variables
+2026-02-01 23:02:22,240 INFO    MainThread:3139403 [wandb_init.py:setup_run_log_directory():717] Logging user logs to /scratch/data/m25csa023/Lab2/wandb_runs/wandb/run-20260201_230222-vohhvxfs/logs/debug.log
+2026-02-01 23:02:22,240 INFO    MainThread:3139403 [wandb_init.py:setup_run_log_directory():718] Logging internal logs to /scratch/data/m25csa023/Lab2/wandb_runs/wandb/run-20260201_230222-vohhvxfs/logs/debug-internal.log
+2026-02-01 23:02:22,240 INFO    MainThread:3139403 [wandb_init.py:init():844] calling init triggers
+2026-02-01 23:02:22,241 INFO    MainThread:3139403 [wandb_init.py:init():849] wandb.init called with sweep_config: {}
+config: {'model_name': 'ConvNeXt-V2-Tiny-CIFAR10', 'batch_size': 128, 'epochs': 60, 'learning_rate': 0.0003, 'weight_decay': 0.0005, 'optimizer': 'AdamW', 'scheduler': 'CosineAnnealingLR', 'amp': True, 'dims': [32, 64, 128], 'depths': [2, 2, 2], 'flops': 1087116800.0, 'macs': 543558400.0, 'params': 5537098.0, 'seed': 42, '_wandb': {}}
+2026-02-01 23:02:22,241 INFO    MainThread:3139403 [wandb_init.py:init():892] starting backend
+2026-02-01 23:02:22,490 INFO    MainThread:3139403 [wandb_init.py:init():895] sending inform_init request
+2026-02-01 23:02:22,494 INFO    MainThread:3139403 [wandb_init.py:init():903] backend started and connected
+2026-02-01 23:02:22,508 INFO    MainThread:3139403 [wandb_init.py:init():973] updated telemetry
+2026-02-01 23:02:22,509 INFO    MainThread:3139403 [wandb_init.py:init():997] communicating run to backend with 90.0 second timeout
+2026-02-01 23:02:23,518 INFO    MainThread:3139403 [wandb_init.py:init():1044] starting run threads in backend
+2026-02-01 23:02:23,630 INFO    MainThread:3139403 [wandb_run.py:_console_start():2529] atexit reg
+2026-02-01 23:02:23,630 INFO    MainThread:3139403 [wandb_run.py:_redirect():2377] redirect: wrap_raw
+2026-02-01 23:02:23,630 INFO    MainThread:3139403 [wandb_run.py:_redirect():2446] Wrapping output streams.
+2026-02-01 23:02:23,630 INFO    MainThread:3139403 [wandb_run.py:_redirect():2469] Redirects installed.
+2026-02-01 23:02:23,633 INFO    MainThread:3139403 [wandb_init.py:init():1084] run started, returning control to user process
+2026-02-01 23:02:23,634 INFO    MainThread:3139403 [wandb_watch.py:_watch():68] Watching
+2026-02-01 23:38:47,565 INFO    MainThread:3139403 [wandb_run.py:_finish():2295] finishing run saupriyadip571-indian-institute-of-technology-jodhpur/cifar10-convnext-v2/vohhvxfs
+2026-02-01 23:38:47,565 INFO    MainThread:3139403 [wandb_run.py:_atexit_cleanup():2494] got exitcode: 0
+2026-02-01 23:38:47,566 INFO    MainThread:3139403 [wandb_run.py:_restore():2476] restore
+2026-02-01 23:38:47,566 INFO    MainThread:3139403 [wandb_run.py:_restore():2482] restore done
+2026-02-01 23:38:51,588 INFO    MainThread:3139403 [wandb_run.py:_footer_sync_info():3870] logging synced files

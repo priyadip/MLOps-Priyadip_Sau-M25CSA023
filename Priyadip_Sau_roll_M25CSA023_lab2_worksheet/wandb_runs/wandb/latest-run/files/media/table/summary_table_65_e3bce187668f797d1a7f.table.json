@@ -1,0 +1,1 @@
+{"columns": ["Metric", "Value"], "data": [["Model", "ConvNeXt-V2-Tiny"], ["Parameters", "5,537,098.0"], ["FLOPs", "1087.12 MFLOPs"], ["Best Val Accuracy", "90.54%"], ["Epochs", "60"], ["Optimizer", "AdamW"], ["Scheduler", "CosineAnnealingLR"]]}

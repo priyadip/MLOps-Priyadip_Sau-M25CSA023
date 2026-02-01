@@ -1,0 +1,212 @@
+/scratch/data/m25csa023/Lab2/train.py:380: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = GradScaler(enabled=config['amp'])
+============================================================
+Starting Training
+============================================================
+Model: ConvNeXt-V2-Tiny-CIFAR10
+Epochs: 60
+Learning Rate: 0.0003
+FLOPs: 1087.12 MFLOPs
+Parameters: 5,537,098.0
+============================================================
+Epoch 1 [Train]:   0%|          | 0/390 [00:00<?, ?it/s]/scratch/data/m25csa023/Lab2/train.py:60: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with autocast(enabled=use_amp):
+Validation:   0%|          | 0/79 [00:00<?, ?it/s]/scratch/data/m25csa023/Lab2/train.py:122: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with autocast(enabled=use_amp):
+                                                                                         
+Epoch 1/60 | Train Loss: 1.9935 | Train Acc: 29.12% | Val Loss: 1.7302 | Val Acc: 42.34% | LR: 0.000300
+ New best validation accuracy: 42.34%
+Epoch 2/60 | Train Loss: 1.7600 | Train Acc: 41.54% | Val Loss: 1.5086 | Val Acc: 53.83% | LR: 0.000300
+ New best validation accuracy: 53.83%
+Epoch 3/60 | Train Loss: 1.5837 | Train Acc: 50.45% | Val Loss: 1.3394 | Val Acc: 61.59% | LR: 0.000299
+ New best validation accuracy: 61.59%
+Epoch 4/60 | Train Loss: 1.4730 | Train Acc: 55.61% | Val Loss: 1.2367 | Val Acc: 66.57% | LR: 0.000298
+ New best validation accuracy: 66.57%
+Epoch 5/60 | Train Loss: 1.3964 | Train Acc: 59.65% | Val Loss: 1.2269 | Val Acc: 67.42% | LR: 0.000297
+ New best validation accuracy: 67.42%
+Epoch 6/60 | Train Loss: 1.3357 | Train Acc: 62.42% | Val Loss: 1.1211 | Val Acc: 72.55% | LR: 0.000295
+ New best validation accuracy: 72.55%
+Epoch 7/60 | Train Loss: 1.2844 | Train Acc: 64.75% | Val Loss: 1.0814 | Val Acc: 74.30% | LR: 0.000293
+ New best validation accuracy: 74.30%
+Epoch 8/60 | Train Loss: 1.2283 | Train Acc: 67.33% | Val Loss: 1.0443 | Val Acc: 75.97% | LR: 0.000290
+ New best validation accuracy: 75.97%
+Epoch 9/60 | Train Loss: 1.1945 | Train Acc: 69.02% | Val Loss: 1.0250 | Val Acc: 76.85% | LR: 0.000287
+ New best validation accuracy: 76.85%
+Epoch 10/60 | Train Loss: 1.1546 | Train Acc: 70.84% | Val Loss: 0.9880 | Val Acc: 78.60% | LR: 0.000284
+ New best validation accuracy: 78.60%
+Epoch 11/60 | Train Loss: 1.1171 | Train Acc: 72.55% | Val Loss: 0.9590 | Val Acc: 79.65% | LR: 0.000280
+ New best validation accuracy: 79.65%
+Epoch 12/60 | Train Loss: 1.0878 | Train Acc: 73.72% | Val Loss: 0.9097 | Val Acc: 81.73% | LR: 0.000276
+ New best validation accuracy: 81.73%
+Epoch 13/60 | Train Loss: 1.0575 | Train Acc: 75.19% | Val Loss: 0.9159 | Val Acc: 81.48% | LR: 0.000271
+Epoch 14/60 | Train Loss: 1.0354 | Train Acc: 76.19% | Val Loss: 0.8913 | Val Acc: 82.58% | LR: 0.000267
+ New best validation accuracy: 82.58%
+Epoch 15/60 | Train Loss: 1.0170 | Train Acc: 77.13% | Val Loss: 0.8776 | Val Acc: 83.12% | LR: 0.000262
+ New best validation accuracy: 83.12%
+Epoch 16/60 | Train Loss: 0.9943 | Train Acc: 78.09% | Val Loss: 0.8818 | Val Acc: 83.12% | LR: 0.000256
+Epoch 17/60 | Train Loss: 0.9760 | Train Acc: 78.82% | Val Loss: 0.8464 | Val Acc: 84.87% | LR: 0.000251
+ New best validation accuracy: 84.87%
+Epoch 18/60 | Train Loss: 0.9555 | Train Acc: 79.79% | Val Loss: 0.8458 | Val Acc: 84.96% | LR: 0.000245
+ New best validation accuracy: 84.96%
+Epoch 19/60 | Train Loss: 0.9416 | Train Acc: 80.45% | Val Loss: 0.8272 | Val Acc: 85.62% | LR: 0.000238
+ New best validation accuracy: 85.62%
+Epoch 20/60 | Train Loss: 0.9241 | Train Acc: 81.23% | Val Loss: 0.8184 | Val Acc: 86.21% | LR: 0.000232
+ New best validation accuracy: 86.21%
+Epoch 21/60 | Train Loss: 0.9094 | Train Acc: 81.81% | Val Loss: 0.8085 | Val Acc: 86.09% | LR: 0.000225
+Epoch 22/60 | Train Loss: 0.8973 | Train Acc: 82.45% | Val Loss: 0.8037 | Val Acc: 86.67% | LR: 0.000218
+ New best validation accuracy: 86.67%
+Epoch 23/60 | Train Loss: 0.8836 | Train Acc: 82.92% | Val Loss: 0.8001 | Val Acc: 86.82% | LR: 0.000211
+ New best validation accuracy: 86.82%
+Epoch 24/60 | Train Loss: 0.8684 | Train Acc: 83.74% | Val Loss: 0.7879 | Val Acc: 87.12% | LR: 0.000204
+ New best validation accuracy: 87.12%
+Epoch 25/60 | Train Loss: 0.8585 | Train Acc: 84.14% | Val Loss: 0.7957 | Val Acc: 87.09% | LR: 0.000197
+Epoch 26/60 | Train Loss: 0.8506 | Train Acc: 84.43% | Val Loss: 0.7905 | Val Acc: 87.27% | LR: 0.000189
+ New best validation accuracy: 87.27%
+Epoch 27/60 | Train Loss: 0.8362 | Train Acc: 85.13% | Val Loss: 0.7731 | Val Acc: 88.05% | LR: 0.000182
+ New best validation accuracy: 88.05%
+Epoch 28/60 | Train Loss: 0.8264 | Train Acc: 85.45% | Val Loss: 0.7700 | Val Acc: 88.11% | LR: 0.000174
+ New best validation accuracy: 88.11%
+Epoch 29/60 | Train Loss: 0.8153 | Train Acc: 86.09% | Val Loss: 0.7627 | Val Acc: 88.36% | LR: 0.000166
+ New best validation accuracy: 88.36%
+Epoch 30/60 | Train Loss: 0.8078 | Train Acc: 86.49% | Val Loss: 0.7850 | Val Acc: 87.66% | LR: 0.000158
+Epoch 31/60 | Train Loss: 0.7924 | Train Acc: 87.20% | Val Loss: 0.7643 | Val Acc: 88.46% | LR: 0.000150
+ New best validation accuracy: 88.46%
+Epoch 32/60 | Train Loss: 0.7825 | Train Acc: 87.62% | Val Loss: 0.7586 | Val Acc: 88.80% | LR: 0.000143
+ New best validation accuracy: 88.80%
+Epoch 33/60 | Train Loss: 0.7751 | Train Acc: 87.95% | Val Loss: 0.7477 | Val Acc: 89.33% | LR: 0.000135
+ New best validation accuracy: 89.33%
+Epoch 34/60 | Train Loss: 0.7653 | Train Acc: 88.32% | Val Loss: 0.7479 | Val Acc: 89.30% | LR: 0.000127
+Epoch 35/60 | Train Loss: 0.7591 | Train Acc: 88.70% | Val Loss: 0.7486 | Val Acc: 89.44% | LR: 0.000119
+ New best validation accuracy: 89.44%
+Epoch 36/60 | Train Loss: 0.7496 | Train Acc: 89.09% | Val Loss: 0.7479 | Val Acc: 89.31% | LR: 0.000112
+Epoch 37/60 | Train Loss: 0.7472 | Train Acc: 89.26% | Val Loss: 0.7489 | Val Acc: 89.48% | LR: 0.000104
+ New best validation accuracy: 89.48%
+Epoch 38/60 | Train Loss: 0.7386 | Train Acc: 89.63% | Val Loss: 0.7505 | Val Acc: 89.57% | LR: 0.000097
+ New best validation accuracy: 89.57%
+Epoch 39/60 | Train Loss: 0.7315 | Train Acc: 90.02% | Val Loss: 0.7468 | Val Acc: 89.51% | LR: 0.000090
+Epoch 40/60 | Train Loss: 0.7262 | Train Acc: 90.19% | Val Loss: 0.7451 | Val Acc: 89.79% | LR: 0.000083
+ New best validation accuracy: 89.79%
+Epoch 41/60 | Train Loss: 0.7185 | Train Acc: 90.52% | Val Loss: 0.7486 | Val Acc: 89.61% | LR: 0.000076
+Epoch 42/60 | Train Loss: 0.7138 | Train Acc: 90.76% | Val Loss: 0.7411 | Val Acc: 89.92% | LR: 0.000069
+ New best validation accuracy: 89.92%
+Epoch 43/60 | Train Loss: 0.7103 | Train Acc: 90.92% | Val Loss: 0.7423 | Val Acc: 90.02% | LR: 0.000063
+ New best validation accuracy: 90.02%
+Epoch 44/60 | Train Loss: 0.7029 | Train Acc: 91.16% | Val Loss: 0.7431 | Val Acc: 89.95% | LR: 0.000056
+Epoch 45/60 | Train Loss: 0.6998 | Train Acc: 91.35% | Val Loss: 0.7416 | Val Acc: 89.89% | LR: 0.000050
+Epoch 46/60 | Train Loss: 0.6974 | Train Acc: 91.40% | Val Loss: 0.7361 | Val Acc: 90.21% | LR: 0.000045
+ New best validation accuracy: 90.21%
+Epoch 47/60 | Train Loss: 0.6897 | Train Acc: 91.78% | Val Loss: 0.7375 | Val Acc: 90.19% | LR: 0.000039
+Epoch 48/60 | Train Loss: 0.6861 | Train Acc: 91.98% | Val Loss: 0.7376 | Val Acc: 90.29% | LR: 0.000034
+ New best validation accuracy: 90.29%
+Epoch 49/60 | Train Loss: 0.6851 | Train Acc: 91.97% | Val Loss: 0.7374 | Val Acc: 90.14% | LR: 0.000030
+Epoch 50/60 | Train Loss: 0.6811 | Train Acc: 92.25% | Val Loss: 0.7371 | Val Acc: 90.31% | LR: 0.000025
+ New best validation accuracy: 90.31%
+Epoch 51/60 | Train Loss: 0.6763 | Train Acc: 92.45% | Val Loss: 0.7386 | Val Acc: 90.37% | LR: 0.000021
+ New best validation accuracy: 90.37%
+Epoch 52/60 | Train Loss: 0.6762 | Train Acc: 92.38% | Val Loss: 0.7391 | Val Acc: 90.25% | LR: 0.000017
+Epoch 53/60 | Train Loss: 0.6764 | Train Acc: 92.36% | Val Loss: 0.7366 | Val Acc: 90.33% | LR: 0.000014
+Epoch 54/60 | Train Loss: 0.6760 | Train Acc: 92.38% | Val Loss: 0.7357 | Val Acc: 90.54% | LR: 0.000011
+ New best validation accuracy: 90.54%
+Epoch 55/60 | Train Loss: 0.6716 | Train Acc: 92.62% | Val Loss: 0.7343 | Val Acc: 90.40% | LR: 0.000008
+Epoch 56/60 | Train Loss: 0.6689 | Train Acc: 92.74% | Val Loss: 0.7348 | Val Acc: 90.36% | LR: 0.000006
+Epoch 57/60 | Train Loss: 0.6644 | Train Acc: 92.89% | Val Loss: 0.7355 | Val Acc: 90.46% | LR: 0.000004
+Epoch 58/60 | Train Loss: 0.6685 | Train Acc: 92.76% | Val Loss: 0.7346 | Val Acc: 90.36% | LR: 0.000003
+Epoch 59/60 | Train Loss: 0.6692 | Train Acc: 92.73% | Val Loss: 0.7353 | Val Acc: 90.35% | LR: 0.000002
+Epoch 60/60 | Train Loss: 0.6654 | Train Acc: 93.07% | Val Loss: 0.7353 | Val Acc: 90.43% | LR: 0.000001
+
+============================================================
+Training Complete! Best Validation Accuracy: 90.54%
+============================================================
+
+Model checkpoint saved to /scratch/data/m25csa023/Lab2/cifar10_models/convnext_cifar10_best.pth
+
+============================================================
+Generating Visualizations
+============================================================
+Saved training curves to /scratch/data/m25csa023/Lab2/cifar10_results/training_curves.png
+
+============================================================
+Gradient Flow Analysis
+============================================================
+stem            | Mean: 4.307115 | Std: 0.959155 | Min: 2.720639 | Max: 7.900356
+stage_0         | Mean: 0.075747 | Std: 0.020913 | Min: 0.001088 | Max: 0.105029
+stage_1         | Mean: 0.065093 | Std: 0.013874 | Min: 0.005605 | Max: 0.081179
+stage_2         | Mean: 0.057484 | Std: 0.013504 | Min: 0.011589 | Max: 0.077280
+head            | Mean: 0.171744 | Std: 0.065659 | Min: 0.091276 | Max: 0.400941
+downsample      | Mean: 0.334826 | Std: 0.025423 | Min: 0.285224 | Max: 0.405505
+
+============================================================
+Weight Update Flow Analysis
+============================================================
+stem            | Mean: 0.007098 | Std: 0.004033 | Min: 0.000135 | Max: 0.017873
+stage_0         | Mean: 0.028211 | Std: 0.020065 | Min: 0.000294 | Max: 0.078254
+stage_1         | Mean: 0.054806 | Std: 0.039033 | Min: 0.000514 | Max: 0.152914
+stage_2         | Mean: 0.109040 | Std: 0.076811 | Min: 0.000945 | Max: 0.300189
+head            | Mean: 0.012005 | Std: 0.007117 | Min: 0.000168 | Max: 0.020904
+downsample      | Mean: 0.055541 | Std: 0.034071 | Min: 0.000605 | Max: 0.097145
+
+============================================================
+Final Evaluation
+============================================================
+  with autocast(enabled=use_amp):
+Final Evaluation: 100%|██████████| 79/79 [00:02<00:00, 38.73it/s]
+Saved confusion matrix to /scratch/data/m25csa023/Lab2/cifar10_results/confusion_matrix.png
+
+============================================================
+Classification Report
+============================================================
+              precision    recall  f1-score   support
+
+    airplane       0.92      0.92      0.92      1000
+  automobile       0.95      0.96      0.96      1000
+        bird       0.89      0.87      0.88      1000
+         cat       0.79      0.78      0.79      1000
+        deer       0.89      0.93      0.91      1000
+         dog       0.84      0.83      0.84      1000
+        frog       0.93      0.92      0.93      1000
+       horse       0.95      0.94      0.95      1000
+        ship       0.95      0.95      0.95      1000
+       truck       0.94      0.95      0.95      1000
+
+    accuracy                           0.91     10000
+   macro avg       0.91      0.91      0.91     10000
+weighted avg       0.91      0.91      0.91     10000
+
+
+============================================================
+Per-Class Accuracy
+============================================================
+airplane    : 92.20%
+automobile  : 96.20%
+bird        : 87.30%
+cat         : 78.30%
+deer        : 92.50%
+dog         : 83.00%
+frog        : 92.40%
+horse       : 93.70%
+ship        : 95.10%
+truck       : 94.70%
+======================================================================
+                      FINAL SUMMARY AND FINDINGS
+======================================================================
+
+ MODEL SPECIFICATIONS:
+   • Architecture: ConvNeXt-V2-Style CNN (CIFAR-10 adapted)
+   • Parameters: 5,537,098.0
+   • FLOPs: 1087.12 MFLOPs
+   • MACs: 543.56 MMACs
+
+ TRAINING CONFIGURATION:
+   • Optimizer: AdamW (lr=0.0003, wd=0.0005)
+   • Scheduler: CosineAnnealingLR
+   • Epochs: 60
+   • Batch Size: 128
+   • Mixed Precision: Enabled
+
+ RESULTS:
+   • Best Validation Accuracy: 90.54%
+   • Final Training Accuracy: 93.07%
+   • Final Training Loss: 0.6654
+   • Final Validation Loss: 0.7353
+
+======================================================================
