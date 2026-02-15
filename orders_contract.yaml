@@ -1,0 +1,182 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# DATA CONTRACT: Flash Sale Order Stream
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# NEGOTIATION SUMMARY
+# ───────────────────
+# Producer:   Order Processing Platform Team (orders@retailnexus.com)
+# Consumer:   Marketing Real-Time Dashboard Team (marketing-analytics@retailnexus.com)
+#
+# Agreed Terms:
+#   - Order totals must be non-negative at the contract boundary; refunds
+#     handled separately via dedicated refund event stream
+#   - Status codes mapped to explicit string enum; any unmapped code triggers
+#     hard rejection to prevent downstream parsing failures
+#   - Contract versioning required before introducing new status codes
+#   - Dashboard team accepts responsibility for enum-to-display-label mapping
+#
+# Trade-offs:
+#   - Producer cannot guarantee order_total precision beyond 2 decimal places
+#   - "PENDING_REVIEW" status will be added in contract v1.1.0 after dashboard
+#     team implements handler to avoid null reference errors
+#
+# Contract Effective Date: 2026-02-07
+# Approved By: Director of E-Commerce Platform, Head of Marketing Analytics
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+
+dataContractSpecification: 0.9.3
+id: urn:datacontract:retailnexus:flash-sale-orders
+version: 1.0.0
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 1. OWNERSHIP & GOVERNANCE
+# ───────────────────────────────────────────────────────────────────────────────
+info:
+  title: "Flash Sale Real-Time Order Stream"
+  description: |
+    Streaming order events optimized for real-time marketing analytics during
+    high-traffic promotional periods (Black Friday, Cyber Monday, Flash Sales).
+    
+    This contract defines the interface between the transactional order system
+    and downstream analytics consumers requiring sub-minute visibility into
+    order volume, revenue accumulation, and fulfillment status distribution.
+    
+    CRITICAL: Feed powers dynamic ad spend adjustments. Data quality issues
+    directly impact marketing budget allocation decisions worth millions of
+    dollars during peak sale windows.
+  owner: "Order Processing Platform"
+  contact:
+    name: "E-Commerce Data Operations"
+    email: "ecom-data-ops@retailnexus.com"
+    slack: "#flash-sale-data-support"
+  classification: internal
+  tags: [orders, e-commerce, real-time, marketing, flash-sale, revenue]
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 2. SCHEMA DEFINITION (Logical Contract)
+# ───────────────────────────────────────────────────────────────────────────────
+schema:
+  type: object
+  properties:
+
+    order_total_usd:
+      type: number
+      minimum: 0
+      description: |
+        Gross order value in US Dollars, inclusive of product prices, taxes,
+        and shipping charges. Excludes promotional discounts applied post-capture.
+        
+        CONSTRAINT: Must be greater than or equal to zero. Negative values
+        (historically caused by refund bleed-through) are invalid at this
+        interface—refund events flow through a separate dedicated stream.
+      pii: false
+      # physical_mapping: o_total
+
+    status:
+      type: string
+      enum: [PAID, SHIPPED, CANCELLED]
+      description: |
+        Current order lifecycle state, mapped from internal numeric codes.
+        
+        Mapping Reference:
+          - 2 -> PAID (payment captured, awaiting fulfillment)
+          - 5 -> SHIPPED (handed to carrier, in transit)
+          - 9 -> CANCELLED (order voided, funds released)
+        
+        CRITICAL: Only these three values are valid in contract v1.0.0.
+        Any physical status_code outside {2, 5, 9} indicates either a newly
+        introduced state (requires contract upgrade) or data corruption
+        (requires investigation). Such records MUST be rejected.
+      pii: false
+      # physical_mapping: status_code (integer: 2, 5, 9)
+
+  required:
+    - order_total_usd
+    - status
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 3. SERVICE LEVEL AGREEMENTS (SLAs)
+# ───────────────────────────────────────────────────────────────────────────────
+sla:
+  freshness:
+    threshold: "60 seconds"
+    description: |
+      Near real-time delivery required for live dashboard updates during
+      flash sale events. Order events must propagate within one minute of
+      transaction completion.
+  availability:
+    percentage: "99.9%"
+    description: |
+      High availability critical during promotional windows. Degradation
+      during Black Friday unacceptable—triggers incident escalation.
+  retention:
+    period: "90 days"
+    description: |
+      Hot storage for real-time analytics; older data archived to cold
+      storage for historical trend analysis.
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 4. DATA QUALITY RULES
+# ───────────────────────────────────────────────────────────────────────────────
+quality:
+
+  # Rule 1: Order total must be non-negative
+  - name: order_total_non_negative
+    type: validity
+    expression: "order_total_usd >= 0"
+    threshold: "100%"
+    enforcement: hard
+    description: |
+      Negative order totals historically resulted from refund processing bugs
+      bleeding into the order stream. Such values corrupt revenue aggregations
+      and must be blocked at ingestion. Refunds are tracked separately.
+
+  # Rule 2: Status must be a recognized enum value
+  - name: status_valid_enum
+    type: validity
+    expression: "status IN ('PAID', 'SHIPPED', 'CANCELLED')"
+    threshold: "100%"
+    enforcement: hard
+    description: |
+      Only mapped status values are permitted. Unmapped values indicate either
+      schema drift (new status introduced without contract update) or upstream
+      data corruption. Reject to prevent downstream null reference errors.
+
+  # Rule 3: Reject unmapped physical status codes at transformation layer
+  - name: status_code_mapped_only
+    type: validity
+    expression: "CAST(status_code AS INT) IN (2, 5, 9)"
+    threshold: "100%"
+    enforcement: hard
+    description: |
+      Physical layer validation: raw status_code must be one of {2, 5, 9}.
+      Code 7 (PENDING_REVIEW) caused Black Friday 2023 outage when dashboard
+      encountered unhandled value. Any deviation triggers hard circuit breaker.
+      
+      NOTE: When new status codes are needed, Producer must:
+        1. Notify Consumer team via contract change request
+        2. Update contract version with new enum value
+        3. Consumer implements handler before deployment
+        4. Coordinated release during low-traffic window
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 5. LINEAGE & CONSUMERS
+# ───────────────────────────────────────────────────────────────────────────────
+lineage:
+  sources:
+    - name: orders_transactional_db
+      type: mysql
+      table: orders_raw
+      description: "Primary order capture system, event-sourced architecture"
+
+consumers:
+  - name: marketing-realtime-dashboard
+    team: marketing-analytics
+    usage: "Live ad spend optimization based on revenue velocity"
+    criticality: high
+
+  - name: inventory-replenishment-alerts
+    team: supply-chain
+    usage: "Trigger restock notifications based on order volume spikes"
+    criticality: medium

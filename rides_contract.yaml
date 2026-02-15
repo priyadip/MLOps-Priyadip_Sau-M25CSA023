@@ -1,0 +1,241 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# DATA CONTRACT: CityMove Ride Analytics Platform
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# NEGOTIATION SUMMARY
+# ───────────────────
+# Producer:   CityMove Data Engineering Team (data-platform@citymove.com)
+# Consumer:   Dynamic Pricing ML Team (ml-pricing@citymove.com)
+#
+# Agreed Terms:
+#   - This contract establishes a stable LOGICAL interface decoupled from physical
+#     schema changes; any future DB migrations must NOT break contract field names
+#   - Producer commits to 30-minute data freshness SLA to support hourly retraining
+#   - All quality rule violations trigger hard circuit breaker (block ingestion)
+#   - Passenger ID flagged as PII; ML team will hash before model training
+#   - Driver rating outliers (outside 1.0-5.0) indicate data corruption—reject row
+#   - Negative fare values historically traced to refund processing bugs; must block
+#
+# Trade-offs Documented:
+#   - ML team requested 15-minute freshness; Producer negotiated to 30 minutes
+#     due to ETL batch window constraints—acceptable for hourly retrain cadence
+#   - Distance field remains in meters (not converted to miles) to preserve precision
+#   - ride_id exposed as string to accommodate future UUID migration
+#
+# Contract Effective Date: 2026-02-07
+# Signed Off By: VP of Engineering, Head of ML Platform
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+
+dataContractSpecification: 0.9.3
+id: urn:datacontract:citymove:ride-analytics
+version: 1.0.0
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 1. OWNERSHIP & GOVERNANCE
+# ───────────────────────────────────────────────────────────────────────────────
+info:
+  title: "CityMove Ride Analytics Dataset"
+  description: |
+    Curated ride event records powering CityMove's Dynamic Pricing Algorithm.
+    Each record represents a completed ride with associated fare, distance,
+    driver performance metrics, and temporal attributes.
+    
+    Primary Use Cases:
+      - Real-time dynamic pricing model feature ingestion
+      - Driver incentive calculation and performance dashboards
+      - Demand forecasting and surge pricing calibration
+    
+    CRITICAL: This dataset feeds production ML models. Any schema drift or
+    quality degradation may result in pricing errors affecting millions of
+    daily transactions.
+  owner: "CityMove Data Engineering"
+  contact:
+    name: "Ride Platform Data Steward"
+    email: "data-steward@citymove.com"
+    slack: "#ride-data-contracts"
+  classification: confidential
+  tags: [rides, pricing, ml-critical, real-time, mobility, pii]
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 2. SCHEMA DEFINITION (Logical Contract)
+#    Logical names provide stable interface; physical_mapping shows DB source
+# ───────────────────────────────────────────────────────────────────────────────
+schema:
+  type: object
+  properties:
+
+    ride_id:
+      type: string
+      description: |
+        Globally unique identifier for each ride transaction.
+        Format: Hyphenated alphanumeric string (e.g., "a1-b2-c3").
+        Immutable once assigned at ride initiation.
+      pii: false
+      # physical_mapping: r_id
+
+    pickup_timestamp:
+      type: string
+      format: date-time
+      description: |
+        UTC timestamp marking the exact moment passenger pickup occurred.
+        Used as primary temporal anchor for pricing window calculations
+        and demand pattern analysis.
+      pii: false
+      # physical_mapping: ts_start
+
+    passenger_id:
+      type: integer
+      description: |
+        Internal identifier linking to passenger profile.
+        WARNING: This field constitutes Personally Identifiable Information (PII).
+        Direct usage in models is prohibited without pseudonymization.
+        Must be hashed or tokenized before feature engineering.
+      pii: true   # RESTRICTED: Requires privacy review for downstream usage
+      # physical_mapping: pax_id
+
+    driver_rating:
+      type: number
+      minimum: 1.0
+      maximum: 5.0
+      description: |
+        Driver's cumulative performance rating at time of ride completion.
+        Scale: 1.0 (lowest) to 5.0 (highest), inclusive.
+        Values outside this range indicate sensor/logging malfunction and
+        must be rejected to prevent model contamination.
+      pii: false
+      # physical_mapping: d_rating
+
+    fare_usd:
+      type: number
+      minimum: 0
+      description: |
+        Total ride fare charged to passenger, denominated in US Dollars.
+        Includes base fare, distance charges, surge multipliers, and fees.
+        MUST be non-negative; negative values historically caused by refund
+        processing bugs leaking into raw logs—such records must be blocked.
+      pii: false
+      # physical_mapping: fare_final (renamed from cost_total on 2024-10-21)
+
+    distance_meters:
+      type: integer
+      description: |
+        Total distance traveled during ride, measured in meters.
+        Derived from GPS trajectory aggregation. Null values indicate
+        GPS signal loss or hardware failure—reject such records as they
+        compromise distance-based pricing accuracy.
+      pii: false
+      # physical_mapping: dist_m
+
+  required:
+    - ride_id
+    - pickup_timestamp
+    - passenger_id
+    - driver_rating
+    - fare_usd
+    - distance_meters
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 3. SERVICE LEVEL AGREEMENTS (SLAs)
+# ───────────────────────────────────────────────────────────────────────────────
+sla:
+  freshness:
+    threshold: "30 minutes"
+    description: |
+      Maximum latency from ride completion event to data availability in
+      analytics layer. Negotiated to support ML team's hourly retrain cycle
+      with sufficient buffer for ETL processing and quality validation.
+  availability:
+    percentage: "99.5%"
+    description: |
+      Uptime commitment for data pipeline. Excludes scheduled maintenance
+      windows (Sundays 02:00-04:00 UTC) and force majeure events.
+  retention:
+    period: "3 years"
+    description: |
+      Historical data preserved for regulatory compliance (transportation
+      authority audits) and long-term demand trend analysis.
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 4. DATA QUALITY RULES
+#    All rules enforce HARD circuit breaker: violations block pipeline
+# ───────────────────────────────────────────────────────────────────────────────
+quality:
+
+  # Rule 1: Fare must never be negative
+  - name: fare_non_negative
+    type: validity
+    expression: "fare_usd >= 0"
+    threshold: "100%"
+    enforcement: hard
+    description: |
+      Negative fares indicate upstream refund processing bugs or data corruption.
+      Such records must be quarantined—allowing them through would cause the
+      pricing model to learn inverted incentive signals.
+
+  # Rule 2: Driver rating within valid bounds
+  - name: driver_rating_bounded
+    type: validity
+    expression: "driver_rating >= 1.0 AND driver_rating <= 5.0"
+    threshold: "100%"
+    enforcement: hard
+    description: |
+      Ratings outside the 1.0-5.0 scale indicate instrumentation failure or
+      data injection anomalies. Reject to maintain feature distribution integrity.
+
+  # Rule 3: Distance must not be null
+  - name: distance_not_null
+    type: completeness
+    column: distance_meters
+    threshold: "100%"
+    enforcement: hard
+    description: |
+      Null distance values signal GPS hardware failure or logging dropout.
+      Distance is a primary feature for fare calculation—incomplete records
+      would degrade model accuracy and must be excluded from training sets.
+
+  # Rule 4: Ride ID uniqueness (prevent duplicate event processing)
+  - name: ride_id_unique
+    type: uniqueness
+    column: ride_id
+    threshold: "100%"
+    enforcement: hard
+    description: |
+      Each ride event must appear exactly once. Duplicates indicate ETL
+      replay issues or upstream deduplication failures.
+
+  # Rule 5: Pickup timestamp validity
+  - name: pickup_timestamp_not_null
+    type: completeness
+    column: pickup_timestamp
+    threshold: "100%"
+    enforcement: hard
+    description: |
+      Temporal anchor required for all time-series feature engineering.
+      Records without timestamps cannot be placed in training windows.
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 5. LINEAGE & CONSUMERS
+# ───────────────────────────────────────────────────────────────────────────────
+lineage:
+  sources:
+    - name: citymove_operational_db
+      type: postgresql
+      table: raw_rides_log_v2
+      description: "Primary operational database capturing real-time ride events"
+
+consumers:
+  - name: dynamic-pricing-algorithm
+    team: ml-pricing
+    usage: "Hourly model retraining for surge pricing and demand prediction"
+    criticality: high
+
+  - name: driver-incentives-dashboard
+    team: driver-ops
+    usage: "Weekly driver performance scoring and bonus calculations"
+    criticality: medium
+
+  - name: regulatory-reporting
+    team: compliance
+    usage: "Quarterly transportation authority audit submissions"
+    criticality: high

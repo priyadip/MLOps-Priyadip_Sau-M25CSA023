@@ -1,0 +1,226 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# DATA CONTRACT: Smart Thermostat Fleet Telemetry
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# NEGOTIATION SUMMARY
+# ───────────────────
+# Producer:   IoT Device Platform Team (iot-platform@climasmart.io)
+# Consumer:   Home Analytics Dashboard Team (analytics@climasmart.io)
+#
+# Background:
+#   ClimaSmart operates a fleet of 10,000+ residential smart thermostats
+#   transmitting telemetry every 60 seconds. The "Average Home Temperature"
+#   report—a flagship metric displayed prominently on the customer dashboard—
+#   exhibited severe accuracy degradation in Q3 2024.
+#
+#   Root Cause Analysis:
+#     - Malfunctioning temperature sensors default to transmitting 9999°C when
+#       calibration fails or communication buffers overflow
+#     - These outliers contaminated the arithmetic mean, causing reported
+#       averages to spike to implausible values (e.g., 847°C)
+#     - Battery telemetry corruption (values like 1.5 or -0.2) indicated
+#       hardware faults but were silently accepted, masking device health issues
+#
+# Agreed Terms:
+#   - Temperature readings outside -30°C to +60°C rejected as physically
+#     implausible for residential HVAC monitoring contexts
+#   - Battery percentage constrained to 0.0-1.0 inclusive; edge values valid
+#     (0.0 = depleted, 1.0 = full charge) but out-of-bounds signals malfunction
+#   - Device ID must be non-null to enable fleet-wide aggregation and
+#     per-device anomaly detection
+#   - Hard circuit breaker on all quality rules—corrupted telemetry must not
+#     pollute analytical aggregates
+#
+# Trade-offs:
+#   - Analytics team requested temperature precision to 0.01°C; Producer
+#     confirmed sensor hardware supports only 0.1°C resolution
+#   - Extreme cold-climate deployments (Alaska, Northern Canada) may legitimately
+#     report -25°C; -30°C threshold accommodates this with safety margin
+#
+# Incident Reference: INC-2024-Q3-TEMP-SPIKE
+# Contract Effective Date: 2024-09-01
+# Approved By: VP of IoT Engineering, Director of Analytics
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+
+dataContractSpecification: 0.9.3
+id: urn:datacontract:climasmart:thermostat-telemetry
+version: 1.0.0
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 1. OWNERSHIP & GOVERNANCE
+# ───────────────────────────────────────────────────────────────────────────────
+info:
+  title: "ClimaSmart Thermostat Fleet Telemetry"
+  description: |
+    High-frequency telemetry stream from residential smart thermostat devices.
+    Each payload contains ambient temperature readings and device health metrics
+    transmitted at 60-second intervals.
+    
+    Primary Use Cases:
+      - Customer-facing "Average Home Temperature" dashboard widget
+      - Predictive maintenance alerts based on battery degradation trends
+      - Energy efficiency analytics and HVAC optimization recommendations
+      - Fleet-wide anomaly detection for firmware issues
+    
+    CRITICAL: Temperature outliers (e.g., 9999°C sentinel values from failed
+    sensors) must be filtered at ingestion to preserve aggregate accuracy.
+  owner: "IoT Device Platform"
+  contact:
+    name: "Thermostat Telemetry Operations"
+    email: "thermostat-ops@climasmart.io"
+    slack: "#iot-telemetry-support"
+  classification: internal
+  tags: [iot, thermostat, telemetry, temperature, smart-home, energy]
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 2. SCHEMA DEFINITION (Logical Contract)
+# ───────────────────────────────────────────────────────────────────────────────
+schema:
+  type: object
+  properties:
+
+    device_id:
+      type: string
+      description: |
+        Unique identifier assigned to each thermostat unit at manufacturing.
+        Required for fleet segmentation, per-device trend analysis, and
+        warranty claim correlation. Format varies by hardware generation.
+      pii: false
+      # physical_mapping: dev_id
+
+    temperature_celsius:
+      type: number
+      minimum: -30
+      maximum: 60
+      description: |
+        Ambient temperature reading from the device's primary sensor,
+        expressed in degrees Celsius.
+        
+        Valid Range: -30°C to +60°C (inclusive)
+          - Lower bound accommodates extreme cold-climate installations
+          - Upper bound reflects maximum plausible indoor temperature
+          
+        CRITICAL: Malfunctioning sensors default to transmitting 9999°C.
+        This sentinel value—and any reading outside the valid range—must
+        be rejected to prevent contamination of statistical aggregates.
+      pii: false
+      # physical_mapping: temp_c
+
+    battery_level:
+      type: number
+      minimum: 0.0
+      maximum: 1.0
+      description: |
+        Device battery charge expressed as decimal fraction.
+        
+        Valid Range: 0.0 to 1.0 (inclusive)
+          - 0.0 = battery fully depleted (device may be on external power)
+          - 1.0 = battery at full charge
+          - 0.5 = 50% remaining capacity
+        
+        Out-of-bounds values (e.g., 1.5, -0.2) indicate sensor malfunction
+        or firmware bugs in charge estimation circuitry. Such readings
+        must be rejected and flagged for device maintenance investigation.
+      pii: false
+      # physical_mapping: batt_lvl
+
+  required:
+    - device_id
+    - temperature_celsius
+    - battery_level
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 3. SERVICE LEVEL AGREEMENTS (SLAs)
+# ───────────────────────────────────────────────────────────────────────────────
+sla:
+  freshness:
+    threshold: "5 minutes"
+    description: |
+      Telemetry must propagate from device to analytics layer within five
+      minutes to support near real-time dashboard updates and timely
+      anomaly alerting.
+  availability:
+    percentage: "99.0%"
+    description: |
+      Telemetry pipeline availability. Brief interruptions tolerable given
+      device-side buffering; extended outages impact customer dashboard.
+  retention:
+    period: "1 year"
+    description: |
+      Historical telemetry retained for seasonal trend analysis and
+      year-over-year energy efficiency comparisons.
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 4. DATA QUALITY RULES
+# ───────────────────────────────────────────────────────────────────────────────
+quality:
+
+  # Rule 1: Temperature must fall within physically plausible residential range
+  - name: temperature_range_valid
+    type: validity
+    expression: "temperature_celsius >= -30 AND temperature_celsius <= 60"
+    threshold: "100%"
+    enforcement: hard
+    description: |
+      Temperature readings outside -30°C to +60°C are physically implausible
+      for residential indoor monitoring. Common failure modes include:
+        - Sensor calibration loss → device transmits 9999°C sentinel
+        - Buffer overflow → garbage numeric values
+        - Firmware crash → stuck at last cached (possibly stale) value
+      
+      Such records must be blocked to prevent skewing of aggregate metrics
+      like "Average Home Temperature" which customers rely upon.
+
+  # Rule 2: Battery level must be normalized percentage
+  - name: battery_level_bounded
+    type: validity
+    expression: "battery_level >= 0.0 AND battery_level <= 1.0"
+    threshold: "100%"
+    enforcement: hard
+    description: |
+      Battery percentage expressed as fraction between 0.0 (depleted) and
+      1.0 (full). Edge values are valid:
+        - 0.0 indicates dead battery (device may operate on wall power)
+        - 1.0 indicates full charge
+        
+      Values outside this range (e.g., 1.5, -0.2) signal hardware fault
+      in the battery monitoring subsystem. Reject and trigger maintenance
+      alert workflow for affected device.
+
+  # Rule 3: Device ID must be present for attribution
+  - name: device_id_not_null
+    type: completeness
+    column: device_id
+    threshold: "100%"
+    enforcement: hard
+    description: |
+      Every telemetry payload must include originating device identifier.
+      Anonymous readings cannot be attributed, aggregated by geography,
+      or correlated with warranty records. Reject orphaned payloads.
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 5. LINEAGE & CONSUMERS
+# ───────────────────────────────────────────────────────────────────────────────
+lineage:
+  sources:
+    - name: iot_telemetry_stream
+      type: kafka
+      topic: thermostat-readings-raw
+      description: "Real-time telemetry ingestion from device fleet via MQTT bridge"
+
+consumers:
+  - name: average-temperature-dashboard
+    team: customer-analytics
+    usage: "Flagship 'Average Home Temperature' metric on customer portal"
+    criticality: high
+
+  - name: predictive-maintenance-engine
+    team: device-ops
+    usage: "Battery degradation trend detection and proactive service dispatch"
+    criticality: medium
+
+  - name: energy-efficiency-reports
+    team: sustainability
+    usage: "Monthly energy consumption analysis and optimization recommendations"
+    criticality: low

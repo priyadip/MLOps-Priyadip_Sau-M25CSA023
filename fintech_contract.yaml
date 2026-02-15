@@ -1,0 +1,248 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# DATA CONTRACT: Financial Transaction Log - Fraud Detection Interface
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# NEGOTIATION SUMMARY
+# ───────────────────
+# Producer:   Core Banking Ledger Team (ledger-platform@safepay.com)
+# Consumer:   Fraud Detection & Prevention Team (fraud-ml@safepay.com)
+# Purpose:    Real-time transaction event stream for fraud detection ML system
+#
+# Agreed Terms:
+#   - Account identifiers (source and destination) MUST conform to exactly
+#     10 uppercase alphanumeric characters: ^[A-Z0-9]{10}$
+#   - Any deviation triggers HARD CIRCUIT BREAKER—pipeline halts immediately
+#   - Soft failures unacceptable due to regulatory and financial exposure
+#   - Producer commits to pre-validation at ledger write time
+#   - Contract violation incidents escalate to VP-level within 15 minutes
+#
+# Regulatory Context:
+#   - PMLA and RBI AML/KYC guidelines mandate end-to-end transaction audit trails
+#   - Malformed identifiers undermine auditability and FIU-IND regulatory reporting
+#   - Ongoing detection gaps may expose the institution to RBI supervisory and
+#     enforcement actions
+#
+# Trade-offs:
+#   - Hard enforcement may cause temporary pipeline halts during upstream bugs
+#   - Accepted trade-off: brief processing delays preferable to undetected fraud
+#
+# Contract Effective Date: 2026-02-07
+# Approved By: Chief Risk Officer, Head of Financial Crimes Compliance
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+
+dataContractSpecification: 0.9.3
+id: urn:datacontract:safepay:transaction-fraud-detection
+version: 1.0.0
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 1. OWNERSHIP & GOVERNANCE
+# ───────────────────────────────────────────────────────────────────────────────
+info:
+  title: "SafePay Transaction Log - Fraud Detection Feed"
+  description: |
+    Real-time transaction event stream feeding the fraud detection and
+    prevention machine learning system. Each record represents a funds
+    transfer between accounts requiring immediate risk scoring.
+    
+    Primary Use Cases:
+      - Real-time transaction risk scoring and blocking decisions
+      - Account velocity pattern analysis (transaction frequency anomalies)
+      - Cross-account relationship graph construction for network fraud detection
+      - Regulatory suspicious activity report  generation
+    
+    CRITICAL: This feed directly gates transaction approval/denial decisions.
+    Data quality issues have direct financial and regulatory consequences.
+    Malformed account identifiers cause silent lookup failures, allowing
+    potentially fraudulent transactions to proceed undetected.
+    
+    COMPLIANCE: Subject to AML/KYC, FIU-IND screening requirements, and RBI
+    examination standards. Complete audit trail integrity is mandatory.
+  owner: "Core Banking Ledger Platform"
+  contact:
+    name: "Transaction Data Steward"
+    email: "ledger-data@safepay.com"
+    slack: "#fraud-data-oncall"
+  classification: restricted
+  tags: [transactions, fraud, financial, compliance, aml, real-time, pii]
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 2. SCHEMA DEFINITION (Logical Contract)
+# ───────────────────────────────────────────────────────────────────────────────
+schema:
+  type: object
+  properties:
+
+    account_source_id:
+      type: string
+      pattern: "^[A-Z0-9]{10}$"
+      description: |
+        Originating account identifier for the funds transfer.
+        
+        FORMAT SPECIFICATION:
+          - Exactly 10 characters in length
+          - Uppercase letters (A-Z) and digits (0-9) only
+          - No lowercase, spaces, underscores, or special characters
+        
+        Valid Examples:   ABCD123456, 1234567890, A1B2C3D4E5
+        Invalid Examples: abcd1234 (lowercase, too short)
+                          ABC_123456 (contains underscore)
+                          ABC123 (too short - only 6 chars)
+        
+        CRITICAL: Malformed identifiers cause fraud model lookup failures.
+        Zero tolerance policy.
+      pii: true   # Account IDs linkable to customer identity
+      # physical_mapping: acct_src
+
+    account_destination_id:
+      type: string
+      pattern: "^[A-Z0-9]{10}$"
+      description: |
+        Receiving account identifier for the funds transfer.
+        Same format requirements as account_source_id:
+          - Exactly 10 uppercase alphanumeric characters
+          - Pattern: ^[A-Z0-9]{10}$
+        
+        Destination account validation equally critical—mule account detection
+        relies on accurate destination identifier resolution.
+      pii: true   # Account IDs linkable to customer identity
+      # physical_mapping: acct_dest
+
+    transaction_timestamp:
+      type: string
+      format: date-time
+      description: |
+        UTC timestamp marking transaction initiation. Precision to milliseconds
+        required for accurate velocity calculations and temporal pattern analysis.
+        Used as primary ordering key for sequential anomaly detection.
+      pii: false
+      # physical_mapping: tx_ts
+
+  required:
+    - account_source_id
+    - account_destination_id
+    - transaction_timestamp
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 3. SERVICE LEVEL AGREEMENTS (SLAs)
+# ───────────────────────────────────────────────────────────────────────────────
+sla:
+  freshness:
+    threshold: "500 milliseconds"
+    description: |
+      Sub-second latency mandatory for real-time fraud scoring. Transaction
+      approval/denial decisions must complete within customer-facing latency
+      budgets. Stale data renders velocity checks ineffective.
+  availability:
+    percentage: "99.99%"
+    description: |
+      Near-zero downtime requirement. Pipeline unavailability forces fallback
+      to permissive mode, increasing fraud exposure. Four-nines availability
+      translates to <53 minutes annual downtime.
+  retention:
+    period: "7 years"
+    description: |
+      Regulatory retention requirement for AML/KYC compliance. Transaction
+      records must be retrievable for examination and legal discovery.
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 4. DATA QUALITY RULES
+# ───────────────────────────────────────────────────────────────────────────────
+#
+# ╔═══════════════════════════════════════════════════════════════════════════╗
+# ║  HARD CIRCUIT BREAKER ENFORCEMENT                                         ║
+# ║                                                                           ║
+# ║  All quality rules in this contract employ HARD enforcement.              ║
+# ║  Violation of ANY rule will:                                              ║
+# ║    1. Immediately HALT the ingestion pipeline                             ║
+# ║    2. Quarantine the offending record batch                               ║
+# ║    3. Trigger PagerDuty alert to on-call fraud data engineer              ║
+# ║    4. Escalate to VP-level if unresolved within 15 minutes                ║
+# ║                                                                           ║
+# ║  Rationale: Soft enforcement (warn-only) is UNACCEPTABLE for this feed.   ║
+# ║  Silent lookup failures have direct financial consequences.               ║
+# ║                                                                           ║
+# ║  Pipeline availability is subordinate to data integrity for this use case.║
+# ╚═══════════════════════════════════════════════════════════════════════════╝
+#
+quality:
+
+  # Rule 1: Source account ID must match exact 10-character alphanumeric pattern
+  - name: account_source_id_format
+    type: validity
+    expression: "REGEXP_LIKE(account_source_id, '^[A-Z0-9]{10}$')"
+    threshold: "100%"
+    enforcement: hard   # HARD CIRCUIT BREAKER - blocks pipeline on violation
+    description: |
+      Source account identifier must be exactly 10 uppercase alphanumeric
+      characters. This rule implements a HARD CIRCUIT BREAKER:
+      
+        - Any violation immediately halts the pipeline
+        - Offending records quarantined for investigation
+        - Alerts dispatched to fraud-data-oncall rotation
+      
+      Malformed IDs cause fraud model lookup failures. The Q4 2024 legacy
+      migration incident demonstrated catastrophic consequences when
+      8-character IDs bypassed detection—847 fraudulent transactions
+      totaling $2.3M in losses.
+      
+      Zero tolerance. No exceptions. Pipeline integrity trumps throughput.
+
+  # Rule 2: Destination account ID must match exact 10-character alphanumeric pattern
+  - name: account_destination_id_format
+    type: validity
+    expression: "REGEXP_LIKE(account_destination_id, '^[A-Z0-9]{10}$')"
+    threshold: "100%"
+    enforcement: hard   # HARD CIRCUIT BREAKER - blocks pipeline on violation
+    description: |
+      Destination account identifier validation mirrors source account rules.
+      HARD CIRCUIT BREAKER enforced—mule account detection depends on accurate
+      destination resolution. Format: exactly 10 uppercase alphanumeric chars.
+
+  # Rule 3: Transaction timestamp must be present
+  - name: transaction_timestamp_not_null
+    type: completeness
+    column: transaction_timestamp
+    threshold: "100%"
+    enforcement: hard
+    description: |
+      Temporal anchor required for velocity calculations, sequence analysis,
+      and audit trail integrity. Transactions without timestamps cannot be
+      ordered or analyzed for time-based anomaly patterns.
+
+  # Rule 4: Account IDs must not be identical (self-transfer detection)
+  - name: source_destination_distinct
+    type: validity
+    expression: "account_source_id != account_destination_id"
+    threshold: "100%"
+    enforcement: hard
+    description: |
+      Source and destination accounts must differ. Self-transfers indicate
+      either data corruption or potential money laundering structuring
+      patterns. Flag for immediate review.
+
+# ───────────────────────────────────────────────────────────────────────────────
+# 5. LINEAGE & CONSUMERS
+# ───────────────────────────────────────────────────────────────────────────────
+lineage:
+  sources:
+    - name: core_ledger_db
+      type: oracle
+      table: tx_log
+      description: "Core banking transaction ledger, event-sourced from ISO 20022 messages"
+
+consumers:
+  - name: real-time-fraud-scoring
+    team: fraud-ml
+    usage: "Sub-second risk scoring for transaction approval/denial decisions"
+    criticality: critical
+
+  - name: aml-surveillance
+    team: financial-crimes
+    usage: "Transaction monitoring for suspicious activity report generation"
+    criticality: critical
+
+  - name: regulatory-reporting
+    team: compliance
+    usage: "RBI examination data packages and AML/KYC audit support"
+    criticality: high
