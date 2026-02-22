@@ -1,0 +1,35 @@
+# ============================================================
+# Dockerfile.eval — Production Evaluation-Only Image (Task 9)
+# ============================================================
+# Pulls the fine-tuned model from your HF profile and runs
+# evaluation automatically on container startup.
+#
+# Build:
+#   docker build -f Dockerfile.eval \
+#       --build-arg HF_REPO_ID=your-username/goodreads-genre-classifier \
+#       -t goodreads-eval .
+#
+# Run:
+#   docker run --rm goodreads-eval
+# ============================================================
+
+FROM python:3.11-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        git curl && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+RUN mkdir -p data results saved_model
+
+# Pass  HF repo id at build time
+ARG HF_REPO_ID=your-username/goodreads-genre-classifier
+ENV HF_REPO_ID=${HF_REPO_ID}
+
+#  evaluate the model pulled from HF Hub
+CMD ["sh", "-c", "python scripts/evaluate.py --model_path ${HF_REPO_ID} --source hub"]

@@ -1,0 +1,13 @@
+{
+  "source": "hub",
+  "timestamp": "20260218_093412",
+  "metrics": {
+    "eval_loss": 1.2716375589370728,
+    "eval_model_preparation_time": 0.001,
+    "eval_accuracy": 0.600625,
+    "eval_f1_macro": 0.6022833478895463,
+    "eval_runtime": 229.7285,
+    "eval_samples_per_second": 6.965,
+    "eval_steps_per_second": 0.435
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "source": "local_post_train",
+  "timestamp": "20260217_081856",
+  "metrics": {
+    "eval_loss": 1.2716375589370728,
+    "eval_accuracy": 0.600625,
+    "eval_f1_macro": 0.6022833478895463,
+    "eval_runtime": 34.2757,
+    "eval_samples_per_second": 46.68,
+    "eval_steps_per_second": 2.918,
+    "epoch": 3.0
+  }
+}

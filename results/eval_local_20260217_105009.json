@@ -1,0 +1,13 @@
+{
+  "source": "local",
+  "timestamp": "20260217_105009",
+  "metrics": {
+    "eval_loss": 1.2716376781463623,
+    "eval_model_preparation_time": 0.0005,
+    "eval_accuracy": 0.600625,
+    "eval_f1_macro": 0.6022833478895463,
+    "eval_runtime": 178.8213,
+    "eval_samples_per_second": 8.947,
+    "eval_steps_per_second": 0.559
+  }
+}
