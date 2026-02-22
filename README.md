@@ -3,7 +3,7 @@
 **End-to-end ML pipeline:** Fine-tune **DistilBERT** on Goodreads book reviews for 8-class genre classification, containerize with Docker, and publish to Hugging Face Hub.
 
 - **Hugging Face Model:** [priyadip/goodreads-genre-classifier](https://huggingface.co/priyadip/goodreads-genre-classifier)
-- **GitHub Repo:** [https://github.com/priyadip/dlops-assignment3](https://github.com/priyadip/dlops-assignment3)
+- **GitHub Repo:** [https://github.com/priyadip/dlops-assignment3](https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023/tree/Assignment-3)
 
 ---
 
