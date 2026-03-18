@@ -56,14 +56,14 @@ in significantly fewer epochs.
 ```
 Assignment-4/
 ├── m25csa023_ass_4_tuned_en_to_hi.py     ← main training + Ray Tune script
-├── download_model.py                      ← auto-download weights from HF
-├── setup.py                               ← pip install with auto-download
+├── install.py                             ← one-command installer
+├── setup.py / pyproject.toml             ← pip package config
 │
-├── transformer_translation_final/         ← v1.0.0 baseline model
-│   └── README.md                          ← HF download link + model specs
+├── transformer_translation_final/         ← v1.0.0 baseline model stub
+│   └── README.md
 │
-├── m25csa023_ass_4_best_model/               ← v1.1.0 optimised model 
-│   └── README.md                          ← HF download link + model specs
+├── m25csa023_ass_4_best_model/            ← v1.1.0 optimised model stub
+│   └── README.md
 │
 ├── report/
 │   └── m25csa023_ass_4_report.pdf         ← assignment report
@@ -74,7 +74,7 @@ Assignment-4/
     ├── tuned_metrics.json
     ├── trial_data.json
     └── plots/
-        ├── 0_summary_figure.png
+        ├── 0_summary_figure.png           ← summary (downloaded by installer)
         ├── 1_baseline_loss_curve.png
         ├── 2_tuned_loss_curve.png
         ├── 3_baseline_vs_tuned_loss.png
@@ -102,37 +102,28 @@ Model weights are hosted on 🤗 Hugging Face (too large for Git):
 
 ## Quick Start
 
-### One Command — Clone repo + download models
+### One Command — Get everything (code + models + report + plot)
 
-Open a terminal in an **empty folder**, then run:
+Open a terminal in any folder, then run:
 
-**bash / PowerShell 7+ / Git Bash:**
-```bash
-git clone -b Assignment-4 https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git . && python download_model.py
-```
-
-**PowerShell 5 (Windows default):**
 ```powershell
-git clone -b Assignment-4 https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git .; python download_model.py
+python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/priyadip/MLOps-Priyadip_Sau-M25CSA023/Assignment-4/install.py').read())"
 ```
 
-What you get:
+Works on **bash / PowerShell 5 / PowerShell 7 / Git Bash** — no git, no pip install needed.
+
+What you get inside `MLOps-Assignment-4/`:
 
 ```
-.
-├── m25csa023_ass_4_tuned_en_to_hi.py    ← training script
-├── download_model.py
-├── results/
-├── report/
-│
-├── transformer_translation_final/
-│   └── transformer_translation_final.pth   (~192 MB)  ← v1.0.0 baseline
-│
-└── m25csa023_ass_4_best_model/
-    └── m25csa023_ass_4_best_model.pth      (~216 MB)  ← v1.1.0 recommended
+MLOps-Assignment-4/
+├── m25csa023_ass_4_tuned_en_to_hi.py    ← main training script
+├── m25csa023_ass_4_report.pdf           ← assignment report
+├── 0_summary_figure.png                 ← results summary plot
+├── transformer_translation_final.pth    (~192 MB)  ← v1.0.0 baseline
+└── m25csa023_ass_4_best_model.pth       (~217 MB)  ← v1.1.0 recommended
 ```
 
-> `download_model.py` uses **only Python standard library** — no extra packages needed to download the models.
+> Uses only Python standard library — no extra packages needed.
 
 ---
 
