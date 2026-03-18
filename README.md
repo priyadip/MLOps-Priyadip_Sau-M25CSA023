@@ -57,7 +57,6 @@ in significantly fewer epochs.
 Assignment-4/
 ├── m25csa023_ass_4_tuned_en_to_hi.py     ← main training + Ray Tune script
 ├── install.py                             ← one-command installer
-├── setup.py / pyproject.toml             ← pip package config
 │
 ├── transformer_translation_final/         ← v1.0.0 baseline model stub
 │   └── README.md
