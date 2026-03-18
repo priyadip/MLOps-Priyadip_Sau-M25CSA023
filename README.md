@@ -102,41 +102,39 @@ Model weights are hosted on 🤗 Hugging Face (too large for Git):
 
 ## Quick Start
 
-### One Command — Everything (GitHub + HuggingFace)
+### Step 1 — Install package + dependencies
 
 ```bash
 pip install git+https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git@Assignment-4
 ```
 
-> Works on **PowerShell**, **CMD**, and **bash** — just one command.
+This installs all dependencies (`torch`, `huggingface_hub`, `ray[tune]`, `optuna`, `nltk`) and
+registers the `download-en-hi-models` command in your Python environment.
 
-What happens automatically:
+### Step 2 — Download model weights from Hugging Face
 
-```
-1. pip clones the GitHub repo (Assignment-4 branch)
-        ↓
-2. setup.py installs all dependencies
-   (torch, huggingface_hub, ray, optuna, nltk ...)
-        ↓
-3. setup.py triggers download_model.py
-        ↓
-4. Models download from Hugging Face into your current folder:
-
-   transformer_translation_final/
-   └── transformer_translation_final.pth   (~192 MB)  ← v1.0.0 baseline
-
-   m25csa023_ass_4_best_model/
-   └── m25csa023_ass_4_best_model.pth      (~216 MB)  ← v1.1.0 recommended
+```bash
+download-en-hi-models
 ```
 
-> **Skip model download** (CI / offline):
+Models are downloaded into your **current folder**:
+
+```
+transformer_translation_final/
+└── transformer_translation_final.pth   (~192 MB)  ← v1.0.0 baseline
+
+m25csa023_ass_4_best_model/
+└── m25csa023_ass_4_best_model.pth      (~216 MB)  ← v1.1.0 recommended
+```
+
+> **One-liner (bash / PowerShell 7+):**
 > ```bash
-> SKIP_MODEL_DOWNLOAD=1 pip install git+https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git@Assignment-4
+> pip install git+https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git@Assignment-4 && download-en-hi-models
 > ```
 >
-> **Already installed? Re-download models only:**
-> ```bash
-> download-en-hi-models
+> **PowerShell 5 (Windows default):**
+> ```powershell
+> pip install git+https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git@Assignment-4; download-en-hi-models
 > ```
 
 ### Alternative — Git clone manually
@@ -148,12 +146,9 @@ pip install huggingface_hub torch nltk ray[tune] optuna
 python download_model.py
 ```
 
-### Download models only
+### Expected output from `download-en-hi-models`
 
-```bash
-python download_model.py
-
-# Output:
+```
 ============================================================
   Downloading EN→HI Transformer models from Hugging Face
   Repo : https://huggingface.co/priyadip/en-hi-transformer
