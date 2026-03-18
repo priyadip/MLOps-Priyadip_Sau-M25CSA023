@@ -102,20 +102,30 @@ Model weights are hosted on 🤗 Hugging Face (too large for Git):
 
 ## Quick Start
 
-### Option A — pip install
+### One Command — Clone GitHub + Download Models from HuggingFace
 
 ```bash
-# Step 1: install package + dependencies
-pip install git+https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git@Assignment-4
-
-# Step 2: download model weights into your current folder
-download-en-hi-models
-
-# Skip download (CI / custom builds)
-SKIP_MODEL_DOWNLOAD=1 python download_model.py
+pip install git+https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git@Assignment-4 && download-en-hi-models
 ```
 
-### Option B — clone manually
+What happens:
+1. `pip install ...` — clones the GitHub repo, installs all dependencies
+2. `download-en-hi-models` — pulls both model weights from HuggingFace into your current folder
+
+```
+transformer_translation_final/
+└── transformer_translation_final.pth   (~192 MB)   ← v1.0.0 baseline
+
+m25csa023_ass_4_best_model/
+└── m25csa023_ass_4_best_model.pth      (~216 MB)   ← v1.1.0 optimised
+```
+
+> **Skip model download** (CI / offline builds):
+> ```bash
+> SKIP_MODEL_DOWNLOAD=1 pip install git+https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git@Assignment-4
+> ```
+
+### Alternative — Git clone manually
 
 ```bash
 git clone -b Assignment-4 https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git
