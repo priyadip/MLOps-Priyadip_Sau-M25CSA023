@@ -44,16 +44,6 @@ MODELS = [
 ]
 
 
-def _progress(block_num, block_size, total_size):
-    downloaded = block_num * block_size
-    if total_size > 0:
-        pct = min(downloaded / total_size * 100, 100)
-        bar = int(pct / 2)
-        print(f"\r  [{'#' * bar}{'.' * (50 - bar)}] {pct:5.1f}%", end="", flush=True)
-        if downloaded >= total_size:
-            print()
-
-
 def download_model_file(model):
     local_file = os.path.join(model["local_dir"], model["filename"])
     if os.path.exists(local_file):
@@ -63,7 +53,7 @@ def download_model_file(model):
     os.makedirs(model["local_dir"], exist_ok=True)
     print(f"  [DOWN]  {model['filename']}  ->  {local_file}")
     try:
-        urllib.request.urlretrieve(model["url"], local_file, _progress)
+        urllib.request.urlretrieve(model["url"], local_file)
         size_mb = os.path.getsize(local_file) / 1024 ** 2
         print(f"  [ OK ]  {model['filename']}  ({size_mb:.0f} MB)")
     except Exception as exc:
