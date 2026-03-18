@@ -33,34 +33,60 @@ DEPS = [
     "optuna",
 ]
 
+MODELS = [
+    {
+        "version":  "v1.0.0",
+        "label":    "baseline, BLEU 0.7566, 100 epochs",
+        "url":      f"https://huggingface.co/{HF_REPO_ID}/resolve/main"
+                    "/v1.0.0/transformer_translation_final.pth",
+        "local_dir": os.path.join(CLONE_DIR, "transformer_translation_final"),
+        "filename":  "transformer_translation_final.pth",
+    },
+    {
+        "version":  "v1.1.0",
+        "label":    "optimised, BLEU 0.8369, 50 epochs  <- recommended",
+        "url":      f"https://huggingface.co/{HF_REPO_ID}/resolve/main"
+                    "/v1.1.0/m25csa023_ass_4_best_model.pth",
+        "local_dir": os.path.join(CLONE_DIR, "m25csa023_ass_4_best_model"),
+        "filename":  "m25csa023_ass_4_best_model.pth",
+    },
+]
+
 
 def run(cmd, **kw):
     print(f"\n>>> {' '.join(str(c) for c in cmd)}\n")
     subprocess.check_call(cmd, **kw)
 
 
-def download_model_file(remote_path, local_dir, filename):
-    try:
-        from huggingface_hub import hf_hub_download
-    except ImportError:
-        print("[ERROR] huggingface_hub not installed — skipping model download.")
-        return
+def _progress(block_num, block_size, total_size):
+    downloaded = block_num * block_size
+    if total_size > 0:
+        pct = min(downloaded / total_size * 100, 100)
+        bar = int(pct / 2)
+        sys.stdout.write(f"\r  [{'#' * bar}{'.' * (50 - bar)}] {pct:5.1f}%")
+        sys.stdout.flush()
+        if downloaded >= total_size:
+            print()
 
-    local_file = os.path.join(local_dir, filename)
+
+def download_model_file(model):
+    import urllib.request
+    local_file = os.path.join(model["local_dir"], model["filename"])
     if os.path.exists(local_file):
         size_mb = os.path.getsize(local_file) / 1024 ** 2
         print(f"  [SKIP]  {local_file}  ({size_mb:.0f} MB already present)")
         return
-
-    os.makedirs(local_dir, exist_ok=True)
-    print(f"  [DOWN]  {HF_REPO_ID}/{remote_path}  ->  {local_file}")
+    os.makedirs(model["local_dir"], exist_ok=True)
+    print(f"  [DOWN]  {model['filename']}  ->  {local_file}")
     try:
-        hf_hub_download(repo_id=HF_REPO_ID, filename=remote_path, local_dir=local_dir)
+        urllib.request.urlretrieve(model["url"], local_file, _progress)
         size_mb = os.path.getsize(local_file) / 1024 ** 2
-        print(f"  [ OK ]  {filename}  ({size_mb:.0f} MB)")
+        print(f"  [ OK ]  {model['filename']}  ({size_mb:.0f} MB)")
     except Exception as exc:
         print(f"  [FAIL]  {exc}")
-        print(f"          Download manually: https://huggingface.co/{HF_REPO_ID}/tree/main/{os.path.dirname(remote_path)}")
+        print(f"          Download manually: {model['url']}")
+        if os.path.exists(local_file):
+            os.remove(local_file)
 
 
 print("=" * 60)
@@ -84,19 +110,9 @@ run([sys.executable, "-m", "pip", "install"] + DEPS)
 print("\n[3/3]  Downloading model weights from Hugging Face ...")
 print(f"  Repo : https://huggingface.co/{HF_REPO_ID}")
 
-print("\n  -- v1.0.0  (baseline, BLEU 0.7566, 100 epochs)")
-download_model_file(
-    remote_path="v1.0.0/transformer_translation_final.pth",
-    local_dir=os.path.join(CLONE_DIR, "transformer_translation_final"),
-    filename="transformer_translation_final.pth",
-)
-
-print("\n  -- v1.1.0  (optimised, BLEU 0.8369, 50 epochs)  <- recommended")
-download_model_file(
-    remote_path="v1.1.0/m25csa023_ass_4_best_model.pth",
-    local_dir=os.path.join(CLONE_DIR, "m25csa023_ass_4_best_model"),
-    filename="m25csa023_ass_4_best_model.pth",
-)
+for m in MODELS:
+    print(f"\n  -- {m['version']}  ({m['label']})")
+    download_model_file(m)
 
 print("\n" + "=" * 60)
 print(f"  Done! Everything is ready in: {CLONE_DIR}")
