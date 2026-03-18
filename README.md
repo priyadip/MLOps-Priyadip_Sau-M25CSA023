@@ -102,7 +102,7 @@ Model weights are hosted on 🤗 Hugging Face (too large for Git):
 
 ## Quick Start
 
-### One Command — Get everything (code + models + report + plot)
+### To get (code + models + report + plot) : 
 
 Open a terminal in any folder, then run:
 
@@ -123,8 +123,7 @@ MLOps-Assignment-4/
 └── m25csa023_ass_4_best_model.pth       (~217 MB)  ← v1.1.0 recommended
 ```
 
-> Uses only Python standard library — no extra packages needed.
-
+> Uses only Python standard library.
 ---
 
 ## Model Architecture
