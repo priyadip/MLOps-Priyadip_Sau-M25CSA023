@@ -1,4 +1,4 @@
-# v1.0.0 — Baseline Model Weights
+# v1.0.0  -  Baseline Model Weights
 
 This folder holds the **baseline EN→HI Transformer** checkpoint trained for **100 epochs** with fixed hyperparameters.
 
@@ -43,5 +43,5 @@ hf_hub_download(
 | Batch Size | 60 |
 | d_ff | 2048 |
 | Dropout | 0.10 |
-| Gradient Clipping | — |
+| Gradient Clipping |  -  |
 | Hardware | NVIDIA A100 80 GB |
