@@ -62,7 +62,7 @@ Assignment-4/
 ├── transformer_translation_final/         ← v1.0.0 baseline model
 │   └── README.md                          ← HF download link + model specs
 │
-├── rollno_ass_4_best_model/               ← v1.1.0 optimised model ✅
+├── rollno_ass_4_best_model/               ← v1.1.0 optimised model 
 │   └── README.md                          ← HF download link + model specs
 │
 ├── report/
@@ -94,7 +94,7 @@ Model weights are hosted on 🤗 Hugging Face (too large for Git):
 | Version | File | BLEU | Link |
 |---|---|---|---|
 | **v1.0.0** Baseline | `transformer_translation_final.pth` | 0.7566 | [Download](https://huggingface.co/priyadip/en-hi-transformer/resolve/main/v1.0.0/transformer_translation_final.pth) |
-| **v1.1.0** Optimised ✅ | `m25csa023_ass_4_best_model.pth` | **0.8369** | [Download](https://huggingface.co/priyadip/en-hi-transformer/resolve/main/v1.1.0/m25csa023_ass_4_best_model.pth) |
+| **v1.1.0** Optimised ✓ | `m25csa023_ass_4_best_model.pth` | **0.8369** | [Download](https://huggingface.co/priyadip/en-hi-transformer/resolve/main/v1.1.0/m25csa023_ass_4_best_model.pth) |
 
 **Full model card:** [huggingface.co/priyadip/en-hi-transformer](https://huggingface.co/priyadip/en-hi-transformer)
 
@@ -125,15 +125,7 @@ python download_model.py
 
 ```bash
 python download_model.py
-```
 
-What it does:
-- ✅ Checks if model already exists  -  skips re-download
-- ✅ Shows Hugging Face progress bars
-- ✅ Prints fallback message if download fails
-- ✅ Respects `SKIP_MODEL_DOWNLOAD=1` env var
-
-```
 # Output:
 ============================================================
   Downloading EN→HI Transformer models from Hugging Face
