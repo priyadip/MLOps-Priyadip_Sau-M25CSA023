@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "en_hi_transformer"
+version = "1.1.0"
+description = "English to Hindi Transformer (from-scratch PyTorch, Ray Tune optimised)"
+authors = [{name = "Priyadip Sau", email = "m25csa023@iitj.ac.in"}]
+license = {text = "MIT"}
+requires-python = ">=3.8"
+dependencies = [
+    "torch>=2.0",
+    "huggingface_hub>=0.20",
+    "nltk",
+    "ray[tune]",
+    "optuna",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.urls]
+Homepage = "https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023/tree/Assignment-4"
+
+[project.scripts]
+download-en-hi-models = "download_model:main"
+
+[tool.setuptools]
+py-modules = ["download_model", "m25csa023_ass_4_tuned_en_to_hi"]

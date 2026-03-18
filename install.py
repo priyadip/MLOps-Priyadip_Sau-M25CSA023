@@ -1,27 +1,37 @@
 """
-install.py  —  bootstrap installer
------------------------------------
-One command, no pre-install needed:
+install.py  —  one-command installer
+--------------------------------------
+Run this single command to get EVERYTHING:
+  - All code files cloned from GitHub
+  - All model weights downloaded from Hugging Face
+
+One command (copy-paste this):
 
   python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/priyadip/MLOps-Priyadip_Sau-M25CSA023/Assignment-4/install.py').read())"
 
 What this does:
-  1. pip-installs all dependencies (torch, huggingface_hub, ray, optuna, nltk)
-  2. Downloads both EN→HI model checkpoints from Hugging Face
-     into your current working directory
+  1. Clones the full GitHub repo (code, results, plots, report) into ./MLOps-Assignment-4/
+  2. pip-installs all dependencies (torch, huggingface_hub, ray, optuna, nltk)
+  3. Downloads both EN->HI model checkpoints from Hugging Face
+     into ./MLOps-Assignment-4/transformer_translation_final/ and ./MLOps-Assignment-4/m25csa023_ass_4_best_model/
 """
 
 import subprocess
 import sys
 import os
-import urllib.request
-import tempfile
 
-DEPS = ["torch>=2.0", "huggingface_hub>=0.20", "nltk", "ray[tune]", "optuna"]
-DL_URL = (
-    "https://raw.githubusercontent.com/priyadip/"
-    "MLOps-Priyadip_Sau-M25CSA023/Assignment-4/download_model.py"
-)
+REPO_URL    = "https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git"
+BRANCH      = "Assignment-4"
+CLONE_DIR   = os.path.join(os.getcwd(), "MLOps-Assignment-4")
+HF_REPO_ID  = "priyadip/en-hi-transformer"
+
+DEPS = [
+    "torch>=2.0",
+    "huggingface_hub>=0.20",
+    "nltk",
+    "ray[tune]",
+    "optuna",
+]
 
 
 def run(cmd, **kw):
@@ -29,25 +39,67 @@ def run(cmd, **kw):
     subprocess.check_call(cmd, **kw)
 
 
+def download_model_file(remote_path, local_dir, filename):
+    try:
+        from huggingface_hub import hf_hub_download
+    except ImportError:
+        print("[ERROR] huggingface_hub not installed — skipping model download.")
+        return
+
+    local_file = os.path.join(local_dir, filename)
+    if os.path.exists(local_file):
+        size_mb = os.path.getsize(local_file) / 1024 ** 2
+        print(f"  [SKIP]  {local_file}  ({size_mb:.0f} MB already present)")
+        return
+
+    os.makedirs(local_dir, exist_ok=True)
+    print(f"  [DOWN]  {HF_REPO_ID}/{remote_path}  ->  {local_file}")
+    try:
+        hf_hub_download(repo_id=HF_REPO_ID, filename=remote_path, local_dir=local_dir)
+        size_mb = os.path.getsize(local_file) / 1024 ** 2
+        print(f"  [ OK ]  {filename}  ({size_mb:.0f} MB)")
+    except Exception as exc:
+        print(f"  [FAIL]  {exc}")
+        print(f"          Download manually: https://huggingface.co/{HF_REPO_ID}/tree/main/{os.path.dirname(remote_path)}")
+
+
 print("=" * 60)
-print("  EN→HI Transformer  —  one-command installer")
+print("  EN->HI Transformer  --  one-command installer")
 print("=" * 60)
 
-# ── Step 1: install dependencies ─────────────────────────────────────────────
-print("\n[1/2]  Installing dependencies ...")
+# Step 1: Clone repo -------------------------------------------------------
+print(f"\n[1/3]  Cloning GitHub repo into {CLONE_DIR} ...")
+if os.path.exists(CLONE_DIR):
+    print(f"  [SKIP]  {CLONE_DIR} already exists — pulling latest changes ...")
+    run(["git", "-C", CLONE_DIR, "pull"])
+else:
+    run(["git", "clone", "-b", BRANCH, REPO_URL, CLONE_DIR])
+print(f"  [ OK ]  Repo ready at {CLONE_DIR}")
+
+# Step 2: Install dependencies ---------------------------------------------
+print("\n[2/3]  Installing Python dependencies ...")
 run([sys.executable, "-m", "pip", "install"] + DEPS)
 
-# ── Step 2: download model weights ───────────────────────────────────────────
-print("\n[2/2]  Downloading model weights from Hugging Face ...")
-with tempfile.NamedTemporaryFile(mode="wb", suffix=".py", delete=False) as f:
-    f.write(urllib.request.urlopen(DL_URL).read())
-    tmp = f.name
+# Step 3: Download model weights -------------------------------------------
+print("\n[3/3]  Downloading model weights from Hugging Face ...")
+print(f"  Repo : https://huggingface.co/{HF_REPO_ID}")
 
-try:
-    run([sys.executable, tmp], cwd=os.getcwd())
-finally:
-    os.unlink(tmp)
+print("\n  -- v1.0.0  (baseline, BLEU 0.7566, 100 epochs)")
+download_model_file(
+    remote_path="v1.0.0/transformer_translation_final.pth",
+    local_dir=os.path.join(CLONE_DIR, "transformer_translation_final"),
+    filename="transformer_translation_final.pth",
+)
+
+print("\n  -- v1.1.0  (optimised, BLEU 0.8369, 50 epochs)  <- recommended")
+download_model_file(
+    remote_path="v1.1.0/m25csa023_ass_4_best_model.pth",
+    local_dir=os.path.join(CLONE_DIR, "m25csa023_ass_4_best_model"),
+    filename="m25csa023_ass_4_best_model.pth",
+)
 
 print("\n" + "=" * 60)
-print("  Done. Models are in your current folder.")
+print(f"  Done! Everything is ready in: {CLONE_DIR}")
+print("  - Code + results: see subfolders")
+print("  - Run the model:  python m25csa023_ass_4_tuned_en_to_hi.py")
 print("=" * 60 + "\n")
