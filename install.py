@@ -56,6 +56,7 @@ def download_model_file(model):
         response = urllib.request.urlopen(model["url"])
         total = int(response.headers.get("Content-Length", 0))
         downloaded = 0
+        import sys as _sys
         with open(local_file, "wb") as f:
             while True:
                 chunk = response.read(65536)  # 64 KB chunks
@@ -66,8 +67,10 @@ def download_model_file(model):
                 if total:
                     pct = downloaded / total * 100
                     bar = int(pct / 2)
-                    print(f"\r  [{'#' * bar}{'.' * (50 - bar)}] {pct:5.1f}%", end="", flush=True)
-        print()
+                    _sys.stdout.write(f"\r  [{'#' * bar}{'.' * (50 - bar)}] {pct:5.1f}%")
+                    _sys.stdout.flush()
+        _sys.stdout.write("\n")
+        _sys.stdout.flush()
         size_mb = os.path.getsize(local_file) / 1024 ** 2
         print(f"  [ OK ]  {model['filename']}  ({size_mb:.0f} MB)")
     except Exception as exc:
