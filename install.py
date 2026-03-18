@@ -53,7 +53,21 @@ def download_model_file(model):
     os.makedirs(model["local_dir"], exist_ok=True)
     print(f"  [DOWN]  {model['filename']}  ->  {local_file}")
     try:
-        urllib.request.urlretrieve(model["url"], local_file)
+        response = urllib.request.urlopen(model["url"])
+        total = int(response.headers.get("Content-Length", 0))
+        downloaded = 0
+        with open(local_file, "wb") as f:
+            while True:
+                chunk = response.read(65536)  # 64 KB chunks
+                if not chunk:
+                    break
+                f.write(chunk)
+                downloaded += len(chunk)
+                if total:
+                    pct = downloaded / total * 100
+                    bar = int(pct / 2)
+                    print(f"\r  [{'#' * bar}{'.' * (50 - bar)}] {pct:5.1f}%", end="", flush=True)
+        print()
         size_mb = os.path.getsize(local_file) / 1024 ** 2
         print(f"  [ OK ]  {model['filename']}  ({size_mb:.0f} MB)")
     except Exception as exc:
