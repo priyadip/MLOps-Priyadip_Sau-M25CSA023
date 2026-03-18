@@ -1,7 +1,7 @@
-# v1.1.0 — Ray Tune Optimised Model Weights ✅ Recommended
+# v1.1.0  -  Ray Tune Optimised Model Weights ✓ Recommended
 
 This folder holds the **best EN→HI Transformer** checkpoint found by Ray Tune + Optuna,
-trained for **50 epochs** — achieving **+10.6% BLEU** over the baseline in half the epochs.
+trained for **50 epochs**  -  achieving **+10.6% BLEU** over the baseline in half the epochs.
 
 > The `.pth` file is **not stored in Git** (216 MB). Download from Hugging Face below.
 
