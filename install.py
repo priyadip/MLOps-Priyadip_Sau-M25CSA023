@@ -64,11 +64,14 @@ def download_model_file(model):
                     break
                 f.write(chunk)
                 downloaded += len(chunk)
+                mb = downloaded / 1024 / 1024
                 if total:
                     pct = downloaded / total * 100
                     bar = int(pct / 2)
-                    _sys.stdout.write(f"\r  [{'#' * bar}{'.' * (50 - bar)}] {pct:5.1f}%")
-                    _sys.stdout.flush()
+                    _sys.stdout.write(f"\r  [{'#' * bar}{'.' * (50 - bar)}] {pct:5.1f}%  {mb:.1f} MB")
+                else:
+                    _sys.stdout.write(f"\r  Downloading ...  {mb:.1f} MB")
+                _sys.stdout.flush()
         _sys.stdout.write("\n")
         _sys.stdout.flush()
         size_mb = os.path.getsize(local_file) / 1024 ** 2
