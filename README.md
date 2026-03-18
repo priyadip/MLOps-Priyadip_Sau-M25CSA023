@@ -1,4 +1,4 @@
-# Assignment 4 — Optimizing Transformer Translation with Ray Tune & Optuna
+# Assignment 4  -  Optimizing Transformer Translation with Ray Tune & Optuna
 
 <div align="center">
 
@@ -22,7 +22,7 @@ This assignment implements a **from-scratch PyTorch encoder-decoder Transformer*
 find a better hyperparameter configuration that matches or exceeds the baseline BLEU score
 in significantly fewer epochs.
 
-> **Architecture:** Vaswani et al. (2017) — [*Attention Is All You Need*](https://papers.neurips.cc/paper/7181-attention-is-all-you-need.pdf) &nbsp;|&nbsp; [Papers with Code](https://paperswithcode.com/paper/attention-is-all-you-need)
+> **Architecture:** Vaswani et al. (2017)  -  [*Attention Is All You Need*](https://papers.neurips.cc/paper/7181-attention-is-all-you-need.pdf) &nbsp;|&nbsp; [Papers with Code](https://paperswithcode.com/paper/attention-is-all-you-need)
 
 ---
 
@@ -30,7 +30,7 @@ in significantly fewer epochs.
 
 ![Training & Evaluation Summary](results/plots/0_summary_figure.png)
 
-> **(a)** Training loss — baseline vs tuned &nbsp;·&nbsp;
+> **(a)** Training loss  -  baseline vs tuned &nbsp;·&nbsp;
 > **(b)** BLEU progression &nbsp;·&nbsp;
 > **(c)** All 20 Ray Tune trials &nbsp;·&nbsp;
 > **(d)** Hyperparameter importance &nbsp;·&nbsp;
@@ -44,9 +44,9 @@ in significantly fewer epochs.
 | Metric | v1.0.0 Baseline | v1.1.0 Optimised | Δ |
 |---|---|---|---|
 | **BLEU Score** | 0.7566 | **0.8369** | **+10.6%** |
-| Final Loss | 0.0998 | 0.1264 | — |
+| Final Loss | 0.0998 | 0.1264 |  -  |
 | Epochs | 100 | **50** | −50% |
-| Training Time | 12.27 min | 13.53 min | — |
+| Training Time | 12.27 min | 13.53 min |  -  |
 | Epochs to match baseline BLEU | 100 | **~10** | **−90%** |
 
 ---
@@ -128,7 +128,7 @@ python download_model.py
 ```
 
 What it does:
-- ✅ Checks if model already exists — skips re-download
+- ✅ Checks if model already exists  -  skips re-download
 - ✅ Shows Hugging Face progress bars
 - ✅ Prints fallback message if download fails
 - ✅ Respects `SKIP_MODEL_DOWNLOAD=1` env var
@@ -153,7 +153,7 @@ What it does:
 
 ## Model Architecture
 
-Built from scratch — no HuggingFace Transformers library used internally.
+Built from scratch  -  no HuggingFace Transformers library used internally.
 
 | Component | Value |
 |---|---|
@@ -170,7 +170,7 @@ Built from scratch — no HuggingFace Transformers library used internally.
 
 ---
 
-## Part 1 — Baseline (v1.0.0)
+## Part 1  -  Baseline (v1.0.0)
 
 Trained for **100 epochs** with fixed hyperparameters on NVIDIA A100 80 GB,
 with three PyTorch performance optimisations:
@@ -193,11 +193,11 @@ torch.backends.cudnn.benchmark = True
 
 ---
 
-## Part 2 — Ray Tune + Optuna (v1.1.0)
+## Part 2  -  Ray Tune + Optuna (v1.1.0)
 
 Refactored training into `train_tune(config)` and ran **20 trials** using:
 - **OptunaSearch** (TPE Bayesian sampler)
-- **ASHAScheduler** (grace_period=5, reduction_factor=3) — pruned ~65% of trials early
+- **ASHAScheduler** (grace_period=5, reduction_factor=3)  -  pruned ~65% of trials early
 
 ### Search Space
 
@@ -227,7 +227,7 @@ best_config = {
 
 ## Dataset
 
-**Raw [Tatoeba](https://tatoeba.org/en/downloads) EN-HI export** — 13 186 sentence pairs.
+**Raw [Tatoeba](https://tatoeba.org/en/downloads) EN-HI export**  -  13 186 sentence pairs.
 
 | Column | Content |
 |---|---|
@@ -240,7 +240,7 @@ best_config = {
 
 ## References
 
-- Vaswani et al. (2017) — [Attention Is All You Need](https://papers.neurips.cc/paper/7181-attention-is-all-you-need.pdf) · [Papers with Code](https://paperswithcode.com/paper/attention-is-all-you-need)
+- Vaswani et al. (2017)  -  [Attention Is All You Need](https://papers.neurips.cc/paper/7181-attention-is-all-you-need.pdf) · [Papers with Code](https://paperswithcode.com/paper/attention-is-all-you-need)
 - [Ray Tune Documentation](https://docs.ray.io/en/latest/tune/index.html)
 - [Optuna Documentation](https://optuna.readthedocs.io)
 - [Tatoeba Dataset](https://tatoeba.org/en/downloads)
