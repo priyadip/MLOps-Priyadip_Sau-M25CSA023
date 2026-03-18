@@ -93,13 +93,18 @@ print("=" * 60)
 print("  EN->HI Transformer  --  one-command installer")
 print("=" * 60)
 
-# Step 1: Clone repo -------------------------------------------------------
+# Step 1: Clone repo (sparse — skips empty model stub folders) -------------
 print(f"\n[1/3]  Cloning GitHub repo into {CLONE_DIR} ...")
 if os.path.exists(CLONE_DIR):
     print(f"  [SKIP]  {CLONE_DIR} already exists — pulling latest changes ...")
     run(["git", "-C", CLONE_DIR, "pull"])
 else:
-    run(["git", "clone", "-b", BRANCH, REPO_URL, CLONE_DIR])
+    run(["git", "clone", "--no-checkout", "--filter=blob:none",
+         "-b", BRANCH, REPO_URL, CLONE_DIR])
+    run(["git", "-C", CLONE_DIR, "sparse-checkout", "init", "--cone"])
+    # include root files + results/ + report/  (excludes the two stub folders)
+    run(["git", "-C", CLONE_DIR, "sparse-checkout", "set", "results", "report"])
+    run(["git", "-C", CLONE_DIR, "checkout", BRANCH])
 print(f"  [ OK ]  Repo ready at {CLONE_DIR}")
 
 # Step 2: Install dependencies ---------------------------------------------
