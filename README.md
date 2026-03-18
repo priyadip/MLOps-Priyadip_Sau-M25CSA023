@@ -109,7 +109,7 @@ Open a terminal in any folder, then run:
 python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/priyadip/MLOps-Priyadip_Sau-M25CSA023/Assignment-4/install.py').read())"
 ```
 
-Works on **bash / PowerShell 5 / PowerShell 7 / Git Bash** — no git, no pip install needed.
+Works on **bash / PowerShell 5 / PowerShell 7 / Git Bash**  -  no git, no pip install needed.
 
 What you get inside `MLOps-Assignment-4/`:
 
