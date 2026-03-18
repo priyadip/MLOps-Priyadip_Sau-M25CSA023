@@ -1,83 +1,80 @@
 """
 download_model.py
 -----------------
-Downloads both EN→HI Transformer checkpoints from Hugging Face Hub.
+Downloads both EN→HI Transformer checkpoints directly from Hugging Face.
+Uses only Python standard library — no extra packages needed.
 
-Usage (standalone):
+Usage:
     python download_model.py
-
-Controlled via env var (skip during CI / custom builds):
-    SKIP_MODEL_DOWNLOAD=1 python download_model.py
 """
 
 import os
 import sys
+import urllib.request
 
-HF_REPO_ID   = "priyadip/en-hi-transformer"
-V100_DIR     = "./transformer_translation_final"   # v1.0.0 baseline
-V110_DIR     = "./m25csa023_ass_4_best_model"       # v1.1.0 optimised
+MODELS = [
+    {
+        "version": "v1.0.0",
+        "label":   "baseline, BLEU 0.7566, 100 epochs",
+        "url":     "https://huggingface.co/priyadip/en-hi-transformer"
+                   "/resolve/main/v1.0.0/transformer_translation_final.pth",
+        "local_dir":  "./transformer_translation_final",
+        "filename":   "transformer_translation_final.pth",
+    },
+    {
+        "version": "v1.1.0",
+        "label":   "optimised, BLEU 0.8369, 50 epochs  ← recommended",
+        "url":     "https://huggingface.co/priyadip/en-hi-transformer"
+                   "/resolve/main/v1.1.0/m25csa023_ass_4_best_model.pth",
+        "local_dir":  "./m25csa023_ass_4_best_model",
+        "filename":   "m25csa023_ass_4_best_model.pth",
+    },
+]
 
 
-def _require_hf_hub():
-    try:
-        from huggingface_hub import hf_hub_download
-        return hf_hub_download
-    except ImportError:
-        print("[ERROR] huggingface_hub not installed.")
-        print("        Run:  pip install huggingface_hub")
-        sys.exit(1)
+def _progress(block_num, block_size, total_size):
+    downloaded = block_num * block_size
+    if total_size > 0:
+        pct = min(downloaded / total_size * 100, 100)
+        bar = int(pct / 2)
+        sys.stdout.write(f"\r  [{'█' * bar}{'░' * (50 - bar)}] {pct:5.1f}%")
+        sys.stdout.flush()
+        if downloaded >= total_size:
+            print()
 
 
-def download_model(remote_path: str, local_dir: str, filename: str) -> None:
-    hf_hub_download = _require_hf_hub()
+def download(model: dict) -> None:
+    local_file = os.path.join(model["local_dir"], model["filename"])
 
-    local_file = os.path.join(local_dir, filename)
     if os.path.exists(local_file):
         size_mb = os.path.getsize(local_file) / 1024 ** 2
-        print(f"  [SKIP]  {local_file}  ({size_mb:.0f} MB already present)")
+        print(f"  [SKIP]  already present  ({size_mb:.0f} MB)")
         return
 
-    os.makedirs(local_dir, exist_ok=True)
-    print(f"  [DOWN]  {HF_REPO_ID}/{remote_path}  →  {local_file}")
+    os.makedirs(model["local_dir"], exist_ok=True)
+    print(f"  [DOWN]  {model['url'].split('resolve/main/')[-1]}"
+          f"  →  {local_file}")
     try:
-        hf_hub_download(
-            repo_id=HF_REPO_ID,
-            filename=remote_path,
-            local_dir=local_dir,
-        )
+        urllib.request.urlretrieve(model["url"], local_file, _progress)
         size_mb = os.path.getsize(local_file) / 1024 ** 2
-        print(f"  [ OK ]  {filename}  ({size_mb:.0f} MB)")
+        print(f"  [ OK ]  {model['filename']}  ({size_mb:.0f} MB)")
     except Exception as exc:
-        print(f"  [FAIL]  {exc}")
-        print(f"          Download manually from:")
-        print(f"          https://huggingface.co/{HF_REPO_ID}/tree/main/{os.path.dirname(remote_path)}")
+        print(f"\n  [FAIL]  {exc}")
+        print(f"          Download manually:")
+        print(f"          {model['url']}")
+        if os.path.exists(local_file):
+            os.remove(local_file)   # remove partial download
 
 
 def main():
-    if os.getenv("SKIP_MODEL_DOWNLOAD") == "1":
-        print("[INFO] SKIP_MODEL_DOWNLOAD=1 — skipping model download.")
-        return
-
     print("=" * 60)
     print("  Downloading EN→HI Transformer models from Hugging Face")
-    print(f"  Repo : https://huggingface.co/{HF_REPO_ID}")
+    print("  Repo : https://huggingface.co/priyadip/en-hi-transformer")
     print("=" * 60)
 
-    # v1.0.0 — baseline
-    print("\n── v1.0.0  (baseline, BLEU 0.7566, 100 epochs)")
-    download_model(
-        remote_path="v1.0.0/transformer_translation_final.pth",
-        local_dir=V100_DIR,
-        filename="transformer_translation_final.pth",
-    )
-
-    # v1.1.0 — Ray Tune optimised
-    print("\n── v1.1.0  (optimised, BLEU 0.8369, 50 epochs)  ← recommended")
-    download_model(
-        remote_path="v1.1.0/m25csa023_ass_4_best_model.pth",
-        local_dir=V110_DIR,
-        filename="m25csa023_ass_4_best_model.pth",
-    )
+    for m in MODELS:
+        print(f"\n── {m['version']}  ({m['label']})")
+        download(m)
 
     print("\n" + "=" * 60)
     print("  Done. Models ready to use.")

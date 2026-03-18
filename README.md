@@ -102,58 +102,37 @@ Model weights are hosted on 🤗 Hugging Face (too large for Git):
 
 ## Quick Start
 
-### One Command — Everything
+### One Command — Clone repo + download models
 
-Works on **PowerShell**, **CMD**, and **bash** — no pre-install needed:
+Open a terminal in an **empty folder**, then run:
 
+**bash / PowerShell 7+ / Git Bash:**
 ```bash
-python -c "import urllib.request; exec(urllib.request.urlopen('https://raw.githubusercontent.com/priyadip/MLOps-Priyadip_Sau-M25CSA023/Assignment-4/install.py').read())"
+git clone -b Assignment-4 https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git . && python download_model.py
 ```
 
-What happens automatically:
-
-```
-1. Installs all dependencies
-   (torch, huggingface_hub, ray[tune], optuna, nltk)
-        ↓
-2. Downloads both model checkpoints from Hugging Face
-   into your current folder:
-
-   transformer_translation_final/
-   └── transformer_translation_final.pth   (~192 MB)  ← v1.0.0 baseline
-
-   m25csa023_ass_4_best_model/
-   └── m25csa023_ass_4_best_model.pth      (~216 MB)  ← v1.1.0 recommended
+**PowerShell 5 (Windows default):**
+```powershell
+git clone -b Assignment-4 https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git .; python download_model.py
 ```
 
-### Alternative — Git clone + download manually
+What you get:
 
-```bash
-git clone -b Assignment-4 https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git
-cd MLOps-Priyadip_Sau-M25CSA023
-pip install huggingface_hub torch nltk ray[tune] optuna
-python download_model.py
+```
+.
+├── m25csa023_ass_4_tuned_en_to_hi.py    ← training script
+├── download_model.py
+├── results/
+├── report/
+│
+├── transformer_translation_final/
+│   └── transformer_translation_final.pth   (~192 MB)  ← v1.0.0 baseline
+│
+└── m25csa023_ass_4_best_model/
+    └── m25csa023_ass_4_best_model.pth      (~216 MB)  ← v1.1.0 recommended
 ```
 
-### Download models only (if deps already installed)
-
-```bash
-python download_model.py
-
-# Output:
-============================================================
-  Downloading EN→HI Transformer models from Hugging Face
-  Repo : https://huggingface.co/priyadip/en-hi-transformer
-============================================================
-
-── v1.0.0  (baseline, BLEU 0.7566, 100 epochs)
-  [DOWN]  v1.0.0/transformer_translation_final.pth  →  ./transformer_translation_final/...
-  [ OK ]  transformer_translation_final.pth  (192 MB)
-
-── v1.1.0  (optimised, BLEU 0.8369, 50 epochs)  ← recommended
-  [DOWN]  v1.1.0/m25csa023_ass_4_best_model.pth  →  ./m25csa023_ass_4_best_model/...
-  [ OK ]  m25csa023_ass_4_best_model.pth  (216 MB)
-```
+> `download_model.py` uses **only Python standard library** — no extra packages needed to download the models.
 
 ---
 
