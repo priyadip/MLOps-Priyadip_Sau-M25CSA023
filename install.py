@@ -93,7 +93,7 @@ RAW_URL = f"https://raw.githubusercontent.com/priyadip/MLOps-Priyadip_Sau-M25CSA
 INCLUDE_PATHS = [
     "m25csa023_ass_4_tuned_en_to_hi.py",
     "results",
-    "report",
+    "report/m25csa023_ass_4_report.pdf",
 ]
 
 
@@ -127,8 +127,9 @@ for path in INCLUDE_PATHS:
         for dl_url, rel_path in gh_list_files(path):
             download_file(dl_url, os.path.join(CLONE_DIR, rel_path))
     except Exception:
-        # single file (not a folder)
-        download_file(f"{RAW_URL}/{path}", os.path.join(CLONE_DIR, path))
+        # single file — strip subdirectory, download to CLONE_DIR root
+        filename = path.split("/")[-1]
+        download_file(f"{RAW_URL}/{path}", os.path.join(CLONE_DIR, filename))
 print(f"  [ OK ]  Files ready at {CLONE_DIR}")
 
 # Step 2: Download model weights -------------------------------------------
