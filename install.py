@@ -39,7 +39,7 @@ MODELS = [
         "label":    "baseline, BLEU 0.7566, 100 epochs",
         "url":      f"https://huggingface.co/{HF_REPO_ID}/resolve/main"
                     "/v1.0.0/transformer_translation_final.pth",
-        "local_dir": os.path.join(CLONE_DIR, "transformer_translation_final"),
+        "local_dir": CLONE_DIR,
         "filename":  "transformer_translation_final.pth",
     },
     {
@@ -47,7 +47,7 @@ MODELS = [
         "label":    "optimised, BLEU 0.8369, 50 epochs  <- recommended",
         "url":      f"https://huggingface.co/{HF_REPO_ID}/resolve/main"
                     "/v1.1.0/m25csa023_ass_4_best_model.pth",
-        "local_dir": os.path.join(CLONE_DIR, "m25csa023_ass_4_best_model"),
+        "local_dir": CLONE_DIR,
         "filename":  "m25csa023_ass_4_best_model.pth",
     },
 ]
