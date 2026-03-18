@@ -16,8 +16,6 @@ What this does:
      into ./MLOps-Assignment-4/transformer_translation_final/ and ./MLOps-Assignment-4/m25csa023_ass_4_best_model/
 """
 
-import subprocess
-import sys
 import os
 import urllib.request
 
@@ -25,14 +23,6 @@ REPO_URL    = "https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git"
 BRANCH      = "Assignment-4"
 CLONE_DIR   = os.path.join(os.getcwd(), "MLOps-Assignment-4")
 HF_REPO_ID  = "priyadip/en-hi-transformer"
-
-DEPS = [
-    "torch>=2.0",
-    "huggingface_hub>=0.20",
-    "nltk",
-    "ray[tune]",
-    "optuna",
-]
 
 MODELS = [
     {
@@ -52,11 +42,6 @@ MODELS = [
         "filename":  "m25csa023_ass_4_best_model.pth",
     },
 ]
-
-
-def run(cmd, **kw):
-    print(f"\n>>> {' '.join(str(c) for c in cmd)}\n")
-    subprocess.check_call(cmd, **kw)
 
 
 def _progress(block_num, block_size, total_size):
@@ -130,7 +115,7 @@ def download_file(url, dest):
     urllib.request.urlretrieve(url, dest)
 
 
-print(f"\n[1/3]  Downloading repo files into {CLONE_DIR} ...")
+print(f"\n[1/2]  Downloading repo files into {CLONE_DIR} ...")
 os.makedirs(CLONE_DIR, exist_ok=True)
 for path in INCLUDE_PATHS:
     try:
@@ -141,12 +126,8 @@ for path in INCLUDE_PATHS:
         download_file(f"{RAW_URL}/{path}", os.path.join(CLONE_DIR, path))
 print(f"  [ OK ]  Files ready at {CLONE_DIR}")
 
-# Step 2: Install dependencies ---------------------------------------------
-print("\n[2/3]  Installing Python dependencies ...")
-run([sys.executable, "-m", "pip", "install"] + DEPS)
-
-# Step 3: Download model weights -------------------------------------------
-print("\n[3/3]  Downloading model weights from Hugging Face ...")
+# Step 2: Download model weights -------------------------------------------
+print("\n[2/2]  Downloading model weights from Hugging Face ...")
 print(f"  Repo : https://huggingface.co/{HF_REPO_ID}")
 
 for m in MODELS:
