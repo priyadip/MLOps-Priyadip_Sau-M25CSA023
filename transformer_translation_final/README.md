@@ -26,7 +26,6 @@ from huggingface_hub import hf_hub_download
 hf_hub_download(
     repo_id  = "priyadip/en-hi-transformer",
     filename = "v1.0.0/transformer_translation_final.pth",
-    local_dir= "./transformer_translation_final",
 )
 ```
 
