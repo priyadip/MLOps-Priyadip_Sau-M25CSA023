@@ -101,9 +101,12 @@ if os.path.exists(CLONE_DIR):
 else:
     run(["git", "clone", "--no-checkout", "--filter=blob:none",
          "-b", BRANCH, REPO_URL, CLONE_DIR])
-    run(["git", "-C", CLONE_DIR, "sparse-checkout", "init", "--cone"])
-    # include root files + results/ + report/  (excludes the two stub folders)
-    run(["git", "-C", CLONE_DIR, "sparse-checkout", "set", "results", "report"])
+    run(["git", "-C", CLONE_DIR, "sparse-checkout", "init"])
+    # exactly which paths to download (no root files, no stub folders)
+    run(["git", "-C", CLONE_DIR, "sparse-checkout", "set",
+         "m25csa023_ass_4_tuned_en_to_hi.py",
+         "results",
+         "report"])
     run(["git", "-C", CLONE_DIR, "checkout", BRANCH])
 print(f"  [ OK ]  Repo ready at {CLONE_DIR}")
 
