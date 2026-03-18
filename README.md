@@ -62,7 +62,7 @@ Assignment-4/
 ├── transformer_translation_final/         ← v1.0.0 baseline model
 │   └── README.md                          ← HF download link + model specs
 │
-├── rollno_ass_4_best_model/               ← v1.1.0 optimised model 
+├── m25csa023_ass_4_best_model/               ← v1.1.0 optimised model 
 │   └── README.md                          ← HF download link + model specs
 │
 ├── report/
@@ -137,7 +137,7 @@ python download_model.py
   [ OK ]  transformer_translation_final.pth  (192 MB)
 
 ── v1.1.0  (optimised, BLEU 0.8369, 50 epochs)  ← recommended
-  [DOWN]  v1.1.0/m25csa023_ass_4_best_model.pth  →  ./rollno_ass_4_best_model/...
+  [DOWN]  v1.1.0/m25csa023_ass_4_best_model.pth  →  ./m25csa023_ass_4_best_model/...
   [ OK ]  m25csa023_ass_4_best_model.pth  (216 MB)
 ```
 

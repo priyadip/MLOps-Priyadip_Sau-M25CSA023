@@ -15,7 +15,7 @@ import sys
 
 HF_REPO_ID   = "priyadip/en-hi-transformer"
 V100_DIR     = "./transformer_translation_final"   # v1.0.0 baseline
-V110_DIR     = "./rollno_ass_4_best_model"         # v1.1.0 optimised
+V110_DIR     = "./m25csa023_ass_4_best_model"       # v1.1.0 optimised
 
 
 def _require_hf_hub():
