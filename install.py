@@ -83,10 +83,6 @@ def download_model_file(model):
             os.remove(local_file)
 
 
-print("=" * 60)
-print("  EN->HI Transformer  --  one-command installer")
-print("=" * 60)
-
 # Step 1: Download only the files we want via GitHub API -------------------
 import json
 
@@ -143,8 +139,4 @@ for m in MODELS:
     print(f"\n  -- {m['version']}  ({m['label']})")
     download_model_file(m)
 
-print("\n" + "=" * 60)
-print(f"  Done! Everything is ready in: {CLONE_DIR}")
-print("  - Code + results: see subfolders")
-print("  - Run the model:  python m25csa023_ass_4_tuned_en_to_hi.py")
-print("=" * 60 + "\n")
+print(f"\nDone. {CLONE_DIR}")
