@@ -19,6 +19,7 @@ What this does:
 import subprocess
 import sys
 import os
+import urllib.request
 
 REPO_URL    = "https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git"
 BRANCH      = "Assignment-4"
@@ -70,7 +71,6 @@ def _progress(block_num, block_size, total_size):
 
 
 def download_model_file(model):
-    import urllib.request
     local_file = os.path.join(model["local_dir"], model["filename"])
     if os.path.exists(local_file):
         size_mb = os.path.getsize(local_file) / 1024 ** 2
@@ -93,22 +93,53 @@ print("=" * 60)
 print("  EN->HI Transformer  --  one-command installer")
 print("=" * 60)
 
-# Step 1: Clone repo (sparse — skips empty model stub folders) -------------
-print(f"\n[1/3]  Cloning GitHub repo into {CLONE_DIR} ...")
-if os.path.exists(CLONE_DIR):
-    print(f"  [SKIP]  {CLONE_DIR} already exists — pulling latest changes ...")
-    run(["git", "-C", CLONE_DIR, "pull"])
-else:
-    run(["git", "clone", "--no-checkout", "--filter=blob:none",
-         "-b", BRANCH, REPO_URL, CLONE_DIR])
-    run(["git", "-C", CLONE_DIR, "sparse-checkout", "init"])
-    # exactly which paths to download (no root files, no stub folders)
-    run(["git", "-C", CLONE_DIR, "sparse-checkout", "set",
-         "m25csa023_ass_4_tuned_en_to_hi.py",
-         "results",
-         "report"])
-    run(["git", "-C", CLONE_DIR, "checkout", BRANCH])
-print(f"  [ OK ]  Repo ready at {CLONE_DIR}")
+# Step 1: Download only the files we want via GitHub API -------------------
+import json
+
+GH_API  = f"https://api.github.com/repos/priyadip/MLOps-Priyadip_Sau-M25CSA023"
+RAW_URL = f"https://raw.githubusercontent.com/priyadip/MLOps-Priyadip_Sau-M25CSA023/{BRANCH}"
+
+# Only these paths will be downloaded from the repo
+INCLUDE_PATHS = [
+    "m25csa023_ass_4_tuned_en_to_hi.py",
+    "results",
+    "report",
+]
+
+
+def gh_list_files(api_path):
+    """Return list of (download_url, relative_path) for all files under api_path."""
+    url = f"{GH_API}/contents/{api_path}?ref={BRANCH}"
+    req = urllib.request.Request(url, headers={"Accept": "application/vnd.github+json"})
+    data = json.loads(urllib.request.urlopen(req).read())
+    files = []
+    for item in data:
+        if item["type"] == "file":
+            files.append((item["download_url"], item["path"]))
+        elif item["type"] == "dir":
+            files.extend(gh_list_files(item["path"]))
+    return files
+
+
+def download_file(url, dest):
+    if os.path.exists(dest):
+        print(f"  [SKIP]  {dest}")
+        return
+    os.makedirs(os.path.dirname(dest), exist_ok=True)
+    print(f"  [DOWN]  {dest}")
+    urllib.request.urlretrieve(url, dest)
+
+
+print(f"\n[1/3]  Downloading repo files into {CLONE_DIR} ...")
+os.makedirs(CLONE_DIR, exist_ok=True)
+for path in INCLUDE_PATHS:
+    try:
+        for dl_url, rel_path in gh_list_files(path):
+            download_file(dl_url, os.path.join(CLONE_DIR, rel_path))
+    except Exception:
+        # single file (not a folder)
+        download_file(f"{RAW_URL}/{path}", os.path.join(CLONE_DIR, path))
+print(f"  [ OK ]  Files ready at {CLONE_DIR}")
 
 # Step 2: Install dependencies ---------------------------------------------
 print("\n[2/3]  Installing Python dependencies ...")
