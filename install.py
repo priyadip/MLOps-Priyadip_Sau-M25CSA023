@@ -92,7 +92,7 @@ RAW_URL = f"https://raw.githubusercontent.com/priyadip/MLOps-Priyadip_Sau-M25CSA
 # Only these paths will be downloaded from the repo
 INCLUDE_PATHS = [
     "m25csa023_ass_4_tuned_en_to_hi.py",
-    "results",
+    "results/plots/0_summary_figure.png",
     "report/m25csa023_ass_4_report.pdf",
 ]
 
