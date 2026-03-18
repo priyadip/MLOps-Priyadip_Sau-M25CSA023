@@ -102,27 +102,41 @@ Model weights are hosted on 🤗 Hugging Face (too large for Git):
 
 ## Quick Start
 
-### One Command — Clone GitHub + Download Models from HuggingFace
+### One Command — Everything (GitHub + HuggingFace)
 
 ```bash
-pip install git+https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git@Assignment-4 && download-en-hi-models
+pip install git+https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git@Assignment-4
 ```
 
-What happens:
-1. `pip install ...` — clones the GitHub repo, installs all dependencies
-2. `download-en-hi-models` — pulls both model weights from HuggingFace into your current folder
+> Works on **PowerShell**, **CMD**, and **bash** — just one command.
+
+What happens automatically:
 
 ```
-transformer_translation_final/
-└── transformer_translation_final.pth   (~192 MB)   ← v1.0.0 baseline
+1. pip clones the GitHub repo (Assignment-4 branch)
+        ↓
+2. setup.py installs all dependencies
+   (torch, huggingface_hub, ray, optuna, nltk ...)
+        ↓
+3. setup.py triggers download_model.py
+        ↓
+4. Models download from Hugging Face into your current folder:
 
-m25csa023_ass_4_best_model/
-└── m25csa023_ass_4_best_model.pth      (~216 MB)   ← v1.1.0 optimised
+   transformer_translation_final/
+   └── transformer_translation_final.pth   (~192 MB)  ← v1.0.0 baseline
+
+   m25csa023_ass_4_best_model/
+   └── m25csa023_ass_4_best_model.pth      (~216 MB)  ← v1.1.0 recommended
 ```
 
-> **Skip model download** (CI / offline builds):
+> **Skip model download** (CI / offline):
 > ```bash
 > SKIP_MODEL_DOWNLOAD=1 pip install git+https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git@Assignment-4
+> ```
+>
+> **Already installed? Re-download models only:**
+> ```bash
+> download-en-hi-models
 > ```
 
 ### Alternative — Git clone manually
