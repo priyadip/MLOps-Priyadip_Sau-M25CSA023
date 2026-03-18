@@ -17,7 +17,6 @@ What this does:
 """
 
 import os
-import sys
 import urllib.request
 
 REPO_URL    = "https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git"
@@ -50,8 +49,7 @@ def _progress(block_num, block_size, total_size):
     if total_size > 0:
         pct = min(downloaded / total_size * 100, 100)
         bar = int(pct / 2)
-        sys.stdout.write(f"\r  [{'#' * bar}{'.' * (50 - bar)}] {pct:5.1f}%")
-        sys.stdout.flush()
+        print(f"\r  [{'#' * bar}{'.' * (50 - bar)}] {pct:5.1f}%", end="", flush=True)
         if downloaded >= total_size:
             print()
 
