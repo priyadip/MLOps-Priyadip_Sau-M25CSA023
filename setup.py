@@ -1,34 +1,18 @@
 """
 setup.py
 --------
-Installs the package and auto-downloads model weights from Hugging Face.
+Install the package, then download models by running:
 
-    pip install .
-    pip install git+https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git@Assignment-4
+    download-en-hi-models
 
-    # Skip model download (CI / custom builds):
+Or directly:
+    python download_model.py
+
+Or skip download (CI / custom builds):
     SKIP_MODEL_DOWNLOAD=1 pip install .
 """
 
-import os
-import subprocess
-import sys
-from setuptools import setup, find_packages
-
-
-def download_models():
-    if os.getenv("SKIP_MODEL_DOWNLOAD") == "1":
-        print("[setup.py] SKIP_MODEL_DOWNLOAD=1 — skipping.")
-        return
-    try:
-        print("[setup.py] Downloading model weights from Hugging Face...")
-        subprocess.check_call([sys.executable, "download_model.py"])
-    except Exception as exc:
-        print(f"[setup.py] Model download failed: {exc}")
-        print("[setup.py] Run manually:  python download_model.py")
-
-
-download_models()
+from setuptools import setup
 
 setup(
     name="en_hi_transformer",
@@ -38,7 +22,7 @@ setup(
     author_email="m25csa023@iitj.ac.in",
     url="https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023/tree/Assignment-4",
     license="MIT",
-    packages=find_packages(),
+    py_modules=["download_model"],
     python_requires=">=3.8",
     install_requires=[
         "torch>=2.0",
@@ -47,6 +31,11 @@ setup(
         "ray[tune]",
         "optuna",
     ],
+    entry_points={
+        "console_scripts": [
+            "download-en-hi-models=download_model:main",
+        ],
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

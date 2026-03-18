@@ -102,17 +102,20 @@ Model weights are hosted on 🤗 Hugging Face (too large for Git):
 
 ## Quick Start
 
-### 1. Clone & install
+### Option A — pip install
 
 ```bash
-# Standard install (auto-downloads model weights)
+# Step 1: install package + dependencies
 pip install git+https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git@Assignment-4
 
-# Skip model download (CI / custom builds)
-SKIP_MODEL_DOWNLOAD=1 pip install git+https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git@Assignment-4
+# Step 2: download model weights into your current folder
+download-en-hi-models
+
+# Skip download (CI / custom builds)
+SKIP_MODEL_DOWNLOAD=1 python download_model.py
 ```
 
-### 2. Or clone manually
+### Option B — clone manually
 
 ```bash
 git clone -b Assignment-4 https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git
@@ -121,7 +124,7 @@ pip install huggingface_hub torch nltk ray[tune] optuna
 python download_model.py
 ```
 
-### 3. Download models only
+### Download models only
 
 ```bash
 python download_model.py
