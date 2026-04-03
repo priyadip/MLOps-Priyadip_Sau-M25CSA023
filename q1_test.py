@@ -9,7 +9,6 @@ import argparse
 import os
 import json
 import re
-import shutil
 
 import torch
 import torch.nn as nn
@@ -27,13 +26,16 @@ def infer_config_from_checkpoint(checkpoint_path):
     name = os.path.basename(checkpoint_path)
 
     # Example: LoRA_r8_a8_d0.1_best.pt
-    match = re.match(r"LoRA_r(\d+)_a(\d+)_d([0-9]*\.?[0-9]+)_best\.pt$", name)
+    # Example: LoRA_r8_a8_d0.1_partial2_best.pt
+    match = re.match(r"LoRA_r(\d+)_a(\d+)_d([0-9]*\.?[0-9]+)(?:_partial(\d+))?_best\.pt$", name)
     if match:
+        partial = int(match.group(4)) if match.group(4) is not None else 0
         return {
             "use_lora": True,
             "rank": int(match.group(1)),
             "alpha": int(match.group(2)),
             "lora_dropout": float(match.group(3)),
+            "partial_unfreeze_last_n": partial,
         }
 
     # Example: Baseline_NoLoRA_best.pt
@@ -43,6 +45,7 @@ def infer_config_from_checkpoint(checkpoint_path):
             "rank": 0,
             "alpha": 0,
             "lora_dropout": 0.1,
+            "partial_unfreeze_last_n": 0,
         }
 
     return None
@@ -61,6 +64,7 @@ def test_model(args):
         rank=args.rank,
         alpha=args.alpha,
         lora_dropout=args.lora_dropout,
+        partial_unfreeze_last_n=args.partial_unfreeze_last_n,
     )
 
     # Load checkpoint
@@ -104,26 +108,10 @@ def push_to_huggingface(args, model):
         "rank": args.rank,
         "alpha": args.alpha,
         "lora_dropout": args.lora_dropout,
+        "partial_unfreeze_last_n": args.partial_unfreeze_last_n,
     }
     with open(os.path.join(save_dir, "config.json"), "w") as f:
         json.dump(config, f, indent=2)
-
-    # Copy best-run plots into hf_model so the model card can display images on HF.
-    exp_name = "Baseline_NoLoRA" if not args.use_lora else f"LoRA_r{args.rank}_a{args.alpha}_d{args.lora_dropout}"
-    plot_dir = os.path.join(args.output_dir, "plots")
-    candidate_plots = [
-        f"{exp_name}_curves.png",
-        f"{exp_name}_classwise.png",
-        "best_model_classwise.png",
-    ]
-    for plot_name in candidate_plots:
-        src = os.path.join(plot_dir, plot_name)
-        dst = os.path.join(save_dir, plot_name)
-        if os.path.exists(src):
-            try:
-                shutil.copy2(src, dst)
-            except Exception as e:
-                print(f"Could not copy {plot_name}: {e}")
 
     # Create repo and upload
     api = HfApi()
@@ -147,6 +135,7 @@ def main():
     parser.add_argument("--rank", type=int, default=4)
     parser.add_argument("--alpha", type=int, default=8)
     parser.add_argument("--lora_dropout", type=float, default=0.1)
+    parser.add_argument("--partial_unfreeze_last_n", type=int, default=0)
     parser.add_argument("--batch_size", type=int, default=64)
     parser.add_argument("--num_workers", type=int, default=4)
     parser.add_argument("--output_dir", type=str, default="outputs_q1")
@@ -160,10 +149,12 @@ def main():
         args.rank = inferred["rank"]
         args.alpha = inferred["alpha"]
         args.lora_dropout = inferred["lora_dropout"]
+        args.partial_unfreeze_last_n = inferred.get("partial_unfreeze_last_n", 0)
         print(
             "Inferred config from checkpoint: "
             f"use_lora={args.use_lora}, rank={args.rank}, "
-            f"alpha={args.alpha}, lora_dropout={args.lora_dropout}"
+            f"alpha={args.alpha}, lora_dropout={args.lora_dropout}, "
+            f"partial_unfreeze_last_n={args.partial_unfreeze_last_n}"
         )
     else:
         print("Could not infer config from checkpoint filename; using CLI arguments.")

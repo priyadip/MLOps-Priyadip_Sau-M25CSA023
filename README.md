@@ -49,7 +49,22 @@ git clone -b Assignment-5 https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA0
 cd MLOps-Priyadip_Sau-M25CSA023
 ```
 
-### 2) Docker 
+### 2) Docker (Recommended: Pull Prebuilt Image)
+
+Use the prebuilt image from Docker Hub for reproducible setup without local rebuild.
+
+```bash
+sudo docker pull priyadipsau/dlops-ass5:assignment-5
+sudo docker run --gpus all -it --rm \
+  -v $(pwd):/workspace \
+  -v $(pwd)/data:/workspace/data \
+  --shm-size=8g \
+  priyadipsau/dlops-ass5:assignment-5
+```
+
+### 3) Docker (Fallback: Build Locally)
+
+If Docker Hub is unavailable or you need to rebuild from source:
 
 ```bash
 sudo docker build -t dlops-ass5 .
@@ -106,6 +121,18 @@ python q1_test.py \
   --checkpoint outputs_q1/checkpoints/LoRA_r8_a8_d0.1_best.pt \
   --output_dir outputs_q1
 ```
+
+### 6) Optional Experiment (LoRA + Partial Unfreezing)
+
+Best config with partially trainable backbone (last 2 ViT blocks trainable + LoRA + trainable head):
+
+```bash
+python q1_train.py --mode lora_partial --rank 8 --alpha 8 --lora_dropout 0.1 \
+  --partial_unfreeze_last_n 2 --epochs 10 --output_dir outputs_q1
+```
+
+This saves results using experiment name pattern:
+- `LoRA_r8_a8_d0.1_partial2`
 
 ## Q2: Adversarial Robustness with IBM ART
 
