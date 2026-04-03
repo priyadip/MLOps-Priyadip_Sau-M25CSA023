@@ -16,6 +16,8 @@ This repository contains the full implementation for Assignment-5 using Python a
 
 - HuggingFace model link (best Q1 model): [HuggingFace ViT-LoRA](https://huggingface.co/priyadip/vit-lora-cifar100)
 - Code: [GitHub Assignment-5](https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023/tree/Assignment-5)
+- Docker image (repo): [Docker Hub - dlops-ass5](https://hub.docker.com/repository/docker/priyadipsau/dlops-ass5/general)
+- Docker image (reproducible tag): `priyadipsau/dlops-ass5:assignment-5`
 
 
 ## Repository Structure
