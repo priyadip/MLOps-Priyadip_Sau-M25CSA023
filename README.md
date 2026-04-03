@@ -2,14 +2,12 @@
 
 This repository contains the full implementation for Assignment-5 using Python and PyTorch, with all code in `.py` files (no notebooks).
 
-## Student Submission Metadata
-
 - Name: Priyadip Sau
 - Roll Number: M25CSA023
 - Branch: `Assignment 5`
-- Report PDF: `<Rollnumber_Name_Ass5.pdf>`
+- Report PDF: `<M25CSA023_Priyadip_Sau_Ass5.pdf>`
 
-## Links (Required in Assignment)
+## Links 
 
 - WandB project/run links:
   - Q1: https://wandb.ai/saupriyadip571-indian-institute-of-technology-jodhpur/DLOps-Ass5-Q1?nw=nwusersaupriyadip571
@@ -21,7 +19,7 @@ This repository contains the full implementation for Assignment-5 using Python a
 ## Repository Structure
 
 ```text
-Code/
+./
 ├── q1_train.py
 ├── q1_optuna.py
 ├── q1_test.py
