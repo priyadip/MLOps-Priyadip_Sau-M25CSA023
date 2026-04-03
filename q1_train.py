@@ -1,5 +1,5 @@
 """
-ViT-S Finetuning on CIFAR-100 with and without LoRA.
+Q1: ViT-S Finetuning on CIFAR-100 with and without LoRA.
 
 Usage:
   # Baseline (no LoRA):
@@ -7,10 +7,6 @@ Usage:
 
   # LoRA experiment:
   python q1_train.py --mode lora --rank 4 --alpha 8 --lora_dropout 0.1 --epochs 10
-
-    # Optional: LoRA + partially trainable backbone (last N blocks)
-    python q1_train.py --mode lora_partial --rank 8 --alpha 8 --lora_dropout 0.1 \
-        --partial_unfreeze_last_n 2 --epochs 10
 
   # Run all LoRA combinations:
   python q1_train.py --mode all --epochs 10
@@ -97,14 +93,7 @@ def get_dataloaders(batch_size=64, num_workers=4, val_split=0.1):
     return train_loader, val_loader, test_loader
 
 
-def create_model(
-    num_classes=100,
-    use_lora=False,
-    rank=4,
-    alpha=8,
-    lora_dropout=0.1,
-    partial_unfreeze_last_n=0,
-):
+def create_model(num_classes=100, use_lora=False, rank=4, alpha=8, lora_dropout=0.1):
     """Create ViT-S model with optional LoRA."""
     # Load pre-trained ViT-S from timm
     model = timm.create_model("vit_small_patch16_224", pretrained=True, num_classes=num_classes)
@@ -119,17 +108,6 @@ def create_model(
     # Freeze all parameters first
     for param in model.parameters():
         param.requires_grad = False
-
-    # Optional setting: unfreeze a small suffix of transformer blocks.
-    if partial_unfreeze_last_n > 0:
-        n_blocks = len(model.blocks)
-        n_unfreeze = min(partial_unfreeze_last_n, n_blocks)
-        for block in model.blocks[n_blocks - n_unfreeze:]:
-            for param in block.parameters():
-                param.requires_grad = True
-        # Keep final norm trainable with partially trainable blocks.
-        for param in model.norm.parameters():
-            param.requires_grad = True
 
     # Unfreeze classification head
     for param in model.head.parameters():
@@ -149,16 +127,7 @@ def create_model(
     return model
 
 
-def train_one_epoch(
-    model,
-    loader,
-    criterion,
-    optimizer,
-    device,
-    gradient_norms=None,
-    scaler=None,
-    use_amp=False,
-):
+def train_one_epoch(model, loader, criterion, optimizer, device, gradient_norms=None):
     """Train for one epoch, optionally tracking gradient norms."""
     model.train()
     total_loss = 0.0
@@ -169,15 +138,9 @@ def train_one_epoch(
         images, labels = images.to(device), labels.to(device)
 
         optimizer.zero_grad()
-        with torch.autocast(device_type=device.type, dtype=torch.float16, enabled=use_amp):
-            outputs = model(images)
-            loss = criterion(outputs, labels)
-
-        if scaler is not None:
-            scaler.scale(loss).backward()
-            scaler.unscale_(optimizer)
-        else:
-            loss.backward()
+        outputs = model(images)
+        loss = criterion(outputs, labels)
+        loss.backward()
 
         # Track gradient norms for LoRA weights
         if gradient_norms is not None:
@@ -188,11 +151,7 @@ def train_one_epoch(
                         gradient_norms[name] = []
                     gradient_norms[name].append(norm)
 
-        if scaler is not None:
-            scaler.step(optimizer)
-            scaler.update()
-        else:
-            optimizer.step()
+        optimizer.step()
 
         total_loss += loss.item() * images.size(0)
         _, predicted = outputs.max(1)
@@ -205,7 +164,7 @@ def train_one_epoch(
 
 
 @torch.no_grad()
-def evaluate(model, loader, criterion, device, use_amp=False):
+def evaluate(model, loader, criterion, device):
     """Evaluate model on a dataloader."""
     model.eval()
     total_loss = 0.0
@@ -214,9 +173,8 @@ def evaluate(model, loader, criterion, device, use_amp=False):
 
     for images, labels in tqdm(loader, desc="Evaluating", leave=False):
         images, labels = images.to(device), labels.to(device)
-        with torch.autocast(device_type=device.type, dtype=torch.float16, enabled=use_amp):
-            outputs = model(images)
-            loss = criterion(outputs, labels)
+        outputs = model(images)
+        loss = criterion(outputs, labels)
 
         total_loss += loss.item() * images.size(0)
         _, predicted = outputs.max(1)
@@ -228,15 +186,7 @@ def evaluate(model, loader, criterion, device, use_amp=False):
     return avg_loss, accuracy
 
 
-def run_experiment(
-    args,
-    use_lora,
-    rank=0,
-    alpha=0,
-    lora_dropout=0.1,
-    partial_unfreeze_last_n=0,
-    exp_name=None,
-):
+def run_experiment(args, use_lora, rank=0, alpha=0, lora_dropout=0.1, exp_name=None):
     """Run a single training experiment."""
     set_seed(42)
     device = get_device()
@@ -244,11 +194,7 @@ def run_experiment(
 
     if exp_name is None:
         if use_lora:
-            base = f"LoRA_r{rank}_a{alpha}_d{lora_dropout}"
-            if partial_unfreeze_last_n > 0:
-                exp_name = f"{base}_partial{partial_unfreeze_last_n}"
-            else:
-                exp_name = base
+            exp_name = f"LoRA_r{rank}_a{alpha}_d{lora_dropout}"
         else:
             exp_name = "Baseline_NoLoRA"
 
@@ -263,11 +209,9 @@ def run_experiment(
             "rank": rank,
             "alpha": alpha,
             "lora_dropout": lora_dropout,
-            "partial_unfreeze_last_n": partial_unfreeze_last_n,
             "epochs": args.epochs,
             "batch_size": args.batch_size,
             "lr": args.lr,
-            "amp": args.amp,
         },
         reinit=True,
     )
@@ -280,8 +224,7 @@ def run_experiment(
     # Model
     model = create_model(
         num_classes=100, use_lora=use_lora,
-        rank=rank, alpha=alpha, lora_dropout=lora_dropout,
-        partial_unfreeze_last_n=partial_unfreeze_last_n,
+        rank=rank, alpha=alpha, lora_dropout=lora_dropout
     )
     model = model.to(device)
 
@@ -294,9 +237,6 @@ def run_experiment(
     optimizer = optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()),
                             lr=args.lr, weight_decay=0.01)
     scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs)
-    use_amp = args.amp and device.type == "cuda"
-    scaler = torch.cuda.amp.GradScaler(enabled=use_amp)
-    print(f"AMP enabled: {use_amp}")
 
     # Training
     train_losses, val_losses = [], []
@@ -308,16 +248,9 @@ def run_experiment(
         print(f"\nEpoch {epoch}/{args.epochs}")
 
         train_loss, train_acc = train_one_epoch(
-            model,
-            train_loader,
-            criterion,
-            optimizer,
-            device,
-            gradient_norms,
-            scaler=scaler,
-            use_amp=use_amp,
+            model, train_loader, criterion, optimizer, device, gradient_norms
         )
-        val_loss, val_acc = evaluate(model, val_loader, criterion, device, use_amp=use_amp)
+        val_loss, val_acc = evaluate(model, val_loader, criterion, device)
         scheduler.step()
 
         train_losses.append(train_loss)
@@ -345,7 +278,7 @@ def run_experiment(
                             {"val_acc": val_acc, "val_loss": val_loss}, ckpt_path)
 
     # Testing
-    test_loss, test_acc = evaluate(model, test_loader, criterion, device, use_amp=use_amp)
+    test_loss, test_acc = evaluate(model, test_loader, criterion, device)
     print(f"\nTest Loss: {test_loss:.4f} | Test Accuracy: {test_acc:.2f}%")
     wandb.log({"test_loss": test_loss, "test_acc": test_acc})
 
@@ -381,7 +314,6 @@ def run_experiment(
         "rank": rank,
         "alpha": alpha,
         "lora_dropout": lora_dropout,
-        "partial_unfreeze_last_n": partial_unfreeze_last_n,
         "test_accuracy": test_acc,
         "trainable_params": trainable_params,
         "best_val_acc": best_val_acc,
@@ -445,21 +377,14 @@ def run_all_experiments(args):
 
 def main():
     parser = argparse.ArgumentParser(description="Q1: ViT-S + LoRA on CIFAR-100")
-    parser.add_argument("--mode", type=str, choices=["baseline", "lora", "lora_partial", "all"],
+    parser.add_argument("--mode", type=str, choices=["baseline", "lora", "all"],
                         default="all", help="Experiment mode")
     parser.add_argument("--rank", type=int, default=4, help="LoRA rank (for single lora mode)")
     parser.add_argument("--alpha", type=int, default=8, help="LoRA alpha (for single lora mode)")
     parser.add_argument("--lora_dropout", type=float, default=0.1, help="LoRA dropout")
-    parser.add_argument(
-        "--partial_unfreeze_last_n",
-        type=int,
-        default=2,
-        help="For mode=lora_partial: number of final ViT blocks to unfreeze",
-    )
     parser.add_argument("--epochs", type=int, default=10, help="Number of epochs")
     parser.add_argument("--batch_size", type=int, default=64, help="Batch size")
     parser.add_argument("--lr", type=float, default=1e-3, help="Learning rate")
-    parser.add_argument("--amp", action="store_true", help="Enable mixed precision training")
     parser.add_argument("--num_workers", type=int, default=4, help="DataLoader workers")
     parser.add_argument("--output_dir", type=str, default="outputs_q1", help="Output directory")
     parser.add_argument("--wandb_project", type=str, default="DLOps-Ass5-Q1",
@@ -473,15 +398,6 @@ def main():
     elif args.mode == "lora":
         run_experiment(args, use_lora=True,
                        rank=args.rank, alpha=args.alpha, lora_dropout=args.lora_dropout)
-    elif args.mode == "lora_partial":
-        run_experiment(
-            args,
-            use_lora=True,
-            rank=args.rank,
-            alpha=args.alpha,
-            lora_dropout=args.lora_dropout,
-            partial_unfreeze_last_n=max(0, args.partial_unfreeze_last_n),
-        )
     elif args.mode == "all":
         run_all_experiments(args)
 
