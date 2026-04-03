@@ -10,11 +10,13 @@ This repository contains the full implementation for Assignment-5 using Python a
 ## Links 
 
 - WandB project/run links:
-  - Q1: https://wandb.ai/saupriyadip571-indian-institute-of-technology-jodhpur/DLOps-Ass5-Q1?nw=nwusersaupriyadip571
-  - Q1 Optuna: https://wandb.ai/saupriyadip571-indian-institute-of-technology-jodhpur/DLOps-Ass5-Q1-Optuna?nw=nwusersaupriyadip571
-  - Q2: https://wandb.ai/saupriyadip571-indian-institute-of-technology-jodhpur/DLOps-Ass5-Q2?nw=nwusersaupriyadip571
-- HuggingFace model link (best Q1 model): https://huggingface.co/priyadip/vit-lora-cifar100
-- GitHub branch link: https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023/tree/Assignment-5
+  - Q1: [WandB Q1](https://wandb.ai/saupriyadip571-indian-institute-of-technology-jodhpur/DLOps-Ass5-Q1)
+  - Q1 Optuna: [WandB Optuna](https://wandb.ai/saupriyadip571-indian-institute-of-technology-jodhpur/DLOps-Ass5-Q1-Optuna)
+  - Q2: [WandB Q2](https://wandb.ai/saupriyadip571-indian-institute-of-technology-jodhpur/DLOps-Ass5-Q2)
+
+- HuggingFace model link (best Q1 model): [HuggingFace ViT-LoRA](https://huggingface.co/priyadip/vit-lora-cifar100)
+- Code: [GitHub Assignment-5](https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023/tree/Assignment-5)
+
 
 ## Repository Structure
 
