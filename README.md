@@ -21,7 +21,7 @@ This repository contains the full implementation for Assignment-5 using Python a
 ## Repository Structure
 
 ```text
-./
+MLOps-Priyadip_Sau-M25CSA023/
 ├── q1_train.py
 ├── q1_optuna.py
 ├── q1_test.py
@@ -42,20 +42,16 @@ This repository contains the full implementation for Assignment-5 using Python a
 
 ## Environment Setup
 
-### Option A: Local Python Environment
+### 1) Clone Assignment-5 branch
 
 ```bash
-cd /home/delusional/Priyadip/Code
-python -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
+git clone -b Assignment-5 https://github.com/priyadip/MLOps-Priyadip_Sau-M25CSA023.git
+cd MLOps-Priyadip_Sau-M25CSA023
 ```
 
-### Option B: Docker (Assignment Requirement)
+### 2) Docker 
 
 ```bash
-cd /home/delusional/Priyadip/Code
 sudo docker build -t dlops-ass5 .
 sudo docker run --gpus all -it --rm \
   -v $(pwd):/workspace \
@@ -221,6 +217,3 @@ Both satisfy the assignment threshold (>= 70%).
 - Results JSON:
   - `outputs_q2/results/fgsm_comparison.json`
   - `outputs_q2/results/detector_results.json`
-
-
-
