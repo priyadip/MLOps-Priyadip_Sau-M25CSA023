@@ -1,6 +1,6 @@
 # DLOps Assignment 5 (LoRA and IBM ART)
 
-This repository contains the full implementation for Assignment-5 using Python and PyTorch, with all code in `.py` files (no notebooks).
+This repository contains the full implementation for Assignment-5 using Python and PyTorch, with all code in `.py` files and using a Docker container.
 
 - Name: Priyadip Sau
 - Roll Number: M25CSA023
