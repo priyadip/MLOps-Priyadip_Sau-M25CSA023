@@ -1,0 +1,9 @@
+{
+  "model": "vit_small_patch16_224",
+  "dataset": "CIFAR-100",
+  "num_classes": 100,
+  "use_lora": true,
+  "rank": 8,
+  "alpha": 8,
+  "lora_dropout": 0.1
+}

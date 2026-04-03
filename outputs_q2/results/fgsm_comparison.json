@@ -1,0 +1,35 @@
+{
+  "clean_accuracy": 93.16,
+  "epsilons": {
+    "0.01": {
+      "scratch_accuracy": 67.02,
+      "art_accuracy": 31.05,
+      "clean_accuracy": 93.16
+    },
+    "0.03": {
+      "scratch_accuracy": 33.39,
+      "art_accuracy": 17.89,
+      "clean_accuracy": 93.16
+    },
+    "0.05": {
+      "scratch_accuracy": 22.46,
+      "art_accuracy": 14.47,
+      "clean_accuracy": 93.16
+    },
+    "0.1": {
+      "scratch_accuracy": 14.67,
+      "art_accuracy": 10.66,
+      "clean_accuracy": 93.16
+    },
+    "0.2": {
+      "scratch_accuracy": 11.43,
+      "art_accuracy": 9.99,
+      "clean_accuracy": 93.16
+    },
+    "0.3": {
+      "scratch_accuracy": 10.09,
+      "art_accuracy": 10.0,
+      "clean_accuracy": 93.16
+    }
+  }
+}

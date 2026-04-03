@@ -1,0 +1,62 @@
+{
+  "pgd": {
+    "detection_accuracy": 99.925,
+    "report": {
+      "Clean": {
+        "precision": 1.0,
+        "recall": 0.9979550102249489,
+        "f1-score": 0.9989764585465711,
+        "support": 1956.0
+      },
+      "Adversarial": {
+        "precision": 0.998046875,
+        "recall": 1.0,
+        "f1-score": 0.9990224828934506,
+        "support": 2044.0
+      },
+      "accuracy": 0.999,
+      "macro avg": {
+        "precision": 0.9990234375,
+        "recall": 0.9989775051124745,
+        "f1-score": 0.9989994707200109,
+        "support": 4000.0
+      },
+      "weighted avg": {
+        "precision": 0.999001953125,
+        "recall": 0.999,
+        "f1-score": 0.9989999769878266,
+        "support": 4000.0
+      }
+    }
+  },
+  "bim": {
+    "detection_accuracy": 99.475,
+    "report": {
+      "Clean": {
+        "precision": 0.9968536969061353,
+        "recall": 0.9916536254564423,
+        "f1-score": 0.9942468619246861,
+        "support": 1917.0
+      },
+      "Adversarial": {
+        "precision": 0.9923554706163402,
+        "recall": 0.9971195391262602,
+        "f1-score": 0.9947318007662835,
+        "support": 2083.0
+      },
+      "accuracy": 0.9945,
+      "macro avg": {
+        "precision": 0.9946045837612378,
+        "recall": 0.9943865822913512,
+        "f1-score": 0.9944893313454848,
+        "support": 4000.0
+      },
+      "weighted avg": {
+        "precision": 0.9945112455657245,
+        "recall": 0.9945,
+        "f1-score": 0.9944993938264479,
+        "support": 4000.0
+      }
+    }
+  }
+}
