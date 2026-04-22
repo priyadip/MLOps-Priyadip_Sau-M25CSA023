@@ -1,0 +1,2 @@
+# Replace this file with the input.txt downloaded from the Google Drive link in Q1.
+# One Bengali sentence per line.

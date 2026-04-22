@@ -1,0 +1,2 @@
+# Replace this file with the reference.txt downloaded from the Google Drive link in Q1.
+# One English reference sentence per line, in the same order as input.txt.
